@@ -1,6 +1,8 @@
 {
   "name": "mwWorkShopApp",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular",
   "id": "5bfcab9a"
 }

@@ -1,0 +1,37 @@
+.c-error {
+    background: #c51244;
+    padding: 10px;
+    size: 2em;
+    border-radius: 0;
+    position: relative; 
+    display: inline-block;
+    box-shadow: 1px 1px 1px #aaaaaa;
+    margin-top: 10px;
+  }
+
+.box {
+    width: 330px;
+    position: absolute;
+
+    
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+  }
+
+[ion-fixed] {
+    height: 100%; // adjust to your footer height!
+}
+
+ion-card {
+  padding-top: 0px !important;
+  margin-top: 0px !important;
+}
+
+ion-button {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+.colorRojo {
+  color: red;
+}

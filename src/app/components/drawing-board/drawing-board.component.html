@@ -1,0 +1,32 @@
+<canvas #myCanvas 
+(touchstart)="handleStart($event)"
+style="border:3px solid #000000;">
+</canvas>
+<!-- (touchmove)="handleMove($event)" -->
+<!-- (touchend)="handleEnd($event)" -->
+
+<ion-card color="light">
+    <ion-card-header>
+        <ion-row>
+            <ion-col size="10">
+                <ion-card-title>
+                    <h1>AVERIAS</h1>            
+                </ion-card-title>
+            </ion-col>
+            <ion-col right>
+                <ion-button (click)="clearAll()"> Limpiar</ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-card-header>
+    <ion-card-content>
+        <ion-list>
+            <form [formGroup]="myForm">
+                <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index" color="light">
+                    <ion-label> {{i + 1}} </ion-label>
+                    <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="averias[i]"></ion-input>
+                    <ion-icon size='large' *ngIf="checkValue(control.key)" (click)="removeControl(control)" name="close-circle"></ion-icon>
+                </ion-item>
+            </form>
+        </ion-list>
+    </ion-card-content>
+</ion-card>

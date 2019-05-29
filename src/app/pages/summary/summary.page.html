@@ -1,0 +1,42 @@
+<ion-content padding color="medium" forceOverscroll="false" class="nomargin">
+  <div class="titlewhite">
+    <ion-label color="dark">
+      <h1 text-center class="titulo">RESUMEN DE LA PERITACION</h1>
+    </ion-label>
+  </div>
+  <div class="backgroundwhite">
+    <ion-card-header>
+      <ion-card-title> AVERIA: {{this.incidence.idInc}} - {{this.incidence.idCar}}</ion-card-title>
+      <ion-card-subtitle class="sub">{{this.customer.name}} / {{this.customer.nif}}</ion-card-subtitle>
+    </ion-card-header>
+
+    <canvas #myCanvas id="myCanvas"></canvas>
+
+    <ion-header>
+      <ion-list-header>
+        <ion-title text-center><h1>Averias del vehiculo {{this.incidence.idCar}}</h1></ion-title>
+      </ion-list-header>
+    </ion-header>
+    
+    <ion-list class="summary">
+      
+      <ion-item *ngFor="let av of this.damages; let i = index;">
+        <ion-text>{{i + 1 }} - {{av}}</ion-text>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ion-row padding>
+    <ion-col size="5">
+      <ion-button color="success" (click)="okey()" expand="block" size="large" class="btns"> Confirmar</ion-button>
+    </ion-col>
+    <ion-col size="2">
+      
+    </ion-col>
+    <ion-col  size="5">
+      <ion-button color="warning" (click)="cancelAndCome()" size="large" class="btns"> Cancelar</ion-button>
+      <ion-button color="danger" (click)="deleteAndCome()" size="large" class="btns"> Eliminar</ion-button>
+    </ion-col>
+  </ion-row>
+</ion-content>
+

@@ -1,0 +1,134 @@
+<ion-content padding color="medium" heigth="100%">
+  <ion-card color="light">
+    <ion-card-content ion-fixed>
+      <ion-card-title>
+        Cliente
+      </ion-card-title>
+      <form [formGroup]="formGroupCustomers">
+          <ion-item *ngFor="let c of constantCustomers | async" color="light">
+        
+            <ion-item [ngSwitch]="c.name" size = "large" color="light">
+  
+              <div *ngSwitchCase="'nif'">
+                  <ion-label position="floating">{{ c.title }}</ion-label>
+                  <ion-input
+                    [type]="c.type"
+                    [name]="c.name" 
+                    [(ngModel)]="customer[c.name]"
+                    [formControlName]="c.name"
+                    (ionBlur)="checkNifCustomer()"
+                    style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                  </ion-input>
+                  <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
+                    <span class="colorRojo">{{ getErrorCustomers(c.name)}}</span>
+                  </div>
+                  
+                </div>
+                  
+              <div *ngSwitchDefault>
+                <ion-label position="floating">{{ c.title }}</ion-label>
+                <ion-input 
+                  [type]="c.type"
+                  [name]="c.name" 
+                  [(ngModel)]="customer[c.name]"
+                  [formControlName]="c.name">
+                </ion-input>
+                <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
+                  <span class="colorRojo">{{ getErrorCustomers(c.name)}}</span>
+                </div>
+  
+                  </div>
+            </ion-item>     
+          </ion-item>
+      </form>
+    </ion-card-content>  
+  </ion-card>
+
+  <ion-card color="light">
+  
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card-title>
+            Vehiculo
+          </ion-card-title>
+        </ion-col>
+        <ion-col size="6">
+            <div *ngIf="existCustomer">
+                <ion-item #miSelect >
+                    <ion-select placeholder="MATRICULA" (ionChange)="getVehicleCustomer($event)" interface="popover">
+                      <ion-select-option 
+                       *ngFor="let auxVeh of auxVehicleArray" value="{{auxVeh.data.enrollment}}">
+                        <ion-label>{{auxVeh.data.enrollment}} - {{auxVeh.data.brand}} - {{auxVeh.data.model}}</ion-label>
+                      </ion-select-option>
+                    </ion-select>
+                  </ion-item>
+            </div>
+        </ion-col>
+      </ion-row>
+      
+
+      <form [formGroup]="formGroupVehicles">
+
+        
+          
+          <ion-item *ngFor="let cv of constantVehicles | async" color="light">
+              <ion-item [ngSwitch]="cv.name" color="light">
+                  <div *ngSwitchCase="'enrollment'">
+                      <ion-label position="floating">{{ cv.title }}</ion-label>
+
+                      <ion-input
+                        [type]="cv.type"
+                        [name]="cv.name"
+                        [formControlName]="cv.name"
+                        [(ngModel)]="vehicle[cv.name]"
+                        (ionBlur)="checkEnrVehicle()"
+                        style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                      </ion-input>
+
+                      <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
+                      <span class="colorRojo">{{getErrorVehicles(cv.name)}}</span>
+                      </div>          
+                  </div>
+
+                  <div *ngSwitchDefault>
+
+                      <ion-label position="floating">{{ cv.title }}</ion-label>
+
+                      <ion-input
+                      [type]="cv.type"
+                      [name]="cv.name"
+                      [formControlName]="cv.name"
+                      [(ngModel)]="vehicle[cv.name]">
+                    </ion-input>
+                    <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
+                      <span class="colorRojo">{{getErrorVehicles(cv.name)}}</span>
+                      </div>   
+
+                  </div>
+                </ion-item> 
+          </ion-item>
+        </form>
+    </ion-card-content>
+  </ion-card>
+      
+      
+</ion-content>
+
+
+<ion-footer >
+  <ion-toolbar color="medium" no-border>
+    <ion-row>
+      <ion-col size="10">
+        <ion-button expand="block" (click)="continue()" color="secondary" >
+          <h1>CONTINUAR</h1>
+        </ion-button>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button expand="block" (click)="comeBack()" color="secondary" >
+          Volver
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

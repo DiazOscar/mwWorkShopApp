@@ -1,0 +1,35 @@
+  [
+    {
+      "type": "text",
+      "name": "enrollment",
+      "title": "Matricula"
+    },
+    {
+      "type": "text",
+      "name": "brand",
+      "title": "Marca"
+
+    },
+    {
+      "type": "text",
+      "name": "model",
+      "title": "Modelo"
+
+    },
+    {
+      "type": "text",
+      "name": "kilometers",
+      "title": "Kilometros"
+
+    },
+    {
+      "type": "text",
+      "name": "color",
+      "title": "Color"
+    },
+    {
+      "type": "text",
+      "name": "year",
+      "title": "Año"
+    }
+  ]

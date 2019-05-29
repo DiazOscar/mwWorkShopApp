@@ -1,0 +1,29 @@
+  [
+    {
+      "type": "text",
+      "name": "nif",
+      "title": "Nif"
+    },
+    {
+      "type": "text",
+      "name": "name",
+      "title": "Nombre"
+    },
+    {
+      "type": "text",
+      "name": "phone",
+      "title": "Telefono"
+
+    },
+    {
+      "type": "text",
+      "name": "address",
+      "title": "Calle"
+
+    },
+    {
+      "type": "text",
+      "name": "email",
+      "title": "Email"
+    }
+  ]
