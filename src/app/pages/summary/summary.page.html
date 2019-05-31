@@ -19,9 +19,17 @@
     </ion-header>
     
     <ion-list class="summary">
-      
-      <ion-item *ngFor="let av of this.damages; let i = index;">
+      <ion-item>
+        <h3>Carroceria</h3>
+      </ion-item>
+      <ion-item *ngFor="let av of this.details.damages; let i = index;">
         <ion-text>{{i + 1 }} - {{av}}</ion-text>
+      </ion-item>
+      <ion-item>
+        <h3>Internas</h3>
+      </ion-item>
+      <ion-item *ngFor="let av of this.details.internDamages">
+        <ion-text>{{av}}</ion-text>
       </ion-item>
     </ion-list>
   </div>

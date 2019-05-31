@@ -8,7 +8,7 @@
     </ion-card-header>
 
     <ion-list >
-      <ion-item *ngFor="let damage of damages">
+      <ion-item *ngFor="let damage of details.damages">
         <h2>{{damage}} </h2>
       </ion-item>
     </ion-list>
@@ -26,7 +26,7 @@
       <form [formGroup]="myForm">
           <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index" color="light">
             <ion-label> {{ i + 1 }} </ion-label>
-            <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="internDamage[i]"></ion-input>
+            <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="details.internDamages[i]"></ion-input>
             <ion-icon (click)="removeControl(control)" name="close-circle"></ion-icon>
           </ion-item>
       </form>

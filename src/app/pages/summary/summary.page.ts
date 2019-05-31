@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DamagesService } from 'src/app/services/damages.service';
 import { Incidence } from 'src/app/models/incidence';
 import { VehicleService } from 'src/app/services/vehicle.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { IncidenceService } from 'src/app/services/incidence.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DetailsService } from 'src/app/services/details.service';
 import { DamageFService } from 'src/app/services/damage-f.service';
+import { Details } from 'src/app/models/details';
 
 @Component({
   selector: 'app-summary',
@@ -20,7 +20,11 @@ export class SummaryPage implements OnInit {
   public id: string;
   public customer: any;
   public vehicle: any;
-  public damages = [];
+  details: Details ={
+    id: '',
+    damages: [],
+    internDamages: []
+  };
   public incidence: Incidence;
 
   @ViewChild('myCanvas') canvas: any;
@@ -28,27 +32,37 @@ export class SummaryPage implements OnInit {
   ctx;
   x: any;
 
-  constructor(private damageService: DamagesService,
-              private detailService: DetailsService,
+  constructor(private detailsService: DetailsService,
               private vehicleService: VehicleService,
               private customerService: CustomerService,
               private incidenceService: IncidenceService,
               private router: Router,
+              private route: ActivatedRoute,
               private alertCtrl: AlertController, 
               private damageFService: DamageFService) {
+
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.incidence = this.router.getCurrentNavigation().extras.state.incidence;
+      }
+    });
+
     
   }
 
   ngOnInit() {    
+
+    this.detailsService.getDetail(this.incidence.idInc).subscribe( (damSnapshot) => {
+      this.details.id = damSnapshot.payload.get('id');
+      this.details.damages = damSnapshot.payload.get('damages');
+      this.details.internDamages = damSnapshot.payload.get('internDamages');
+    });
 
     this.canvasElement = this.canvas.nativeElement;
     this.setBackgroundImage();
     this.canvasElement.width = document.body.clientWidth*4/ 5;
     this.canvasElement.height = (document.body.clientHeight*3)/12;
     this.ctx = this.canvasElement.getContext('2d');
-
-    this.damages = this.damageService.getDamages();
-    this.incidence = this.damageService.incidence;
 
 
     this.vehicleService.getVehicle(this.incidence.idCar).subscribe((veh) =>{
@@ -71,7 +85,7 @@ export class SummaryPage implements OnInit {
     let context = this.canvasElement.getContext("2d");
 
     var background = new Image();
-    background.src = this.damageService.incidence.imagePath;
+    background.src = this.incidence.imagePath;
 
     background.onload = function(){
       context.drawImage(background,0,0, document.body.clientWidth*4/5, (document.body.clientHeight*3)/12);   
@@ -93,7 +107,7 @@ export class SummaryPage implements OnInit {
           text: 'Eliminar',
           handler: () => {
             this.incidenceService.deleteIncidence(this.incidence.idInc);
-            this.detailService.deleteDetails(this.incidence.idInc);
+            this.detailsService.deleteDetails(this.incidence.idInc);
             this.router.navigate(['/menu']);
           }
         }
@@ -103,7 +117,6 @@ export class SummaryPage implements OnInit {
   }
 
   cancelAndCome(){
-    this.damageService.incidence.idInc = '';
     this.router.navigate(['/menu']);
   }
 

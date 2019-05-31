@@ -18,7 +18,6 @@ import { AngularFireStorageModule} from '@angular/fire/storage';
 
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
-import { DamagesService } from './services/damages.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,7 +36,6 @@ import { DamagesService } from './services/damages.service';
   providers: [
     StatusBar,
     SplashScreen,
-    DamagesService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

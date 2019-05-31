@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service'
-import { Router} from '@angular/router'
+import { Router, NavigationExtras} from '@angular/router'
 import { Incidence } from 'src/app/models/incidence';
 import { IncidenceService } from 'src/app/services/incidence.service';
-import { DamagesService } from '../../services/damages.service';
 import { DetailsService } from 'src/app/services/details.service';
 import { VehicleService } from 'src/app/services/vehicle.service';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -20,7 +19,6 @@ export class MenuPage implements OnInit {
   constructor(public AfAuth: AuthService, 
     private router: Router, 
     private incidenceService: IncidenceService,
-    private damagesService: DamagesService,
     private detailsService: DetailsService, 
     private vehicleService: VehicleService,
     public db: AngularFirestore) { 
@@ -45,39 +43,31 @@ export class MenuPage implements OnInit {
 
   public IrForm() {
     
-    this.damagesService.viewDamageList = false;
-
-    console.log(this.damagesService);
-    
     this.router.navigate(['/formulario']);
-    this.damagesService = new DamagesService();
   }
 
   /**
    * Metodo que se ejecuta cuando se pulsa un elemento de la lista de incidencias
    * @param inc 
    */
-  goIncident(inc: Incidence) {
-    
-    this.damagesService.viewDamageList = false;    
+  goIncident(inc: Incidence) { 
+    console.log(inc);
+
+    let navigationExtras: NavigationExtras = {
+      state: {
+        incidence: inc
+      }
+    };
     
     switch (inc.state) {
       case 'drawImage':
-          this.damagesService.setIncidence(inc);
-          this.router.navigate(['/drawimage']);
-          this.vehicleService.getVehicle(inc.idCar).subscribe((veh) =>{
-            this.damagesService.vehicle = veh.payload.data();
-          });
-        break;
+        
+        this.router.navigate(['/drawimage'], navigationExtras);
+      break;
 
       case 'damageList':
-          this.damagesService.setIncidence(inc);
-          this.damagesService.setViewDamageList(true);
-          this.router.navigate(['/damagelist']);
-          this.vehicleService.getVehicle(inc.idCar).subscribe((veh) =>{
-            this.damagesService.vehicle = veh.payload.data();
-          });
-        break;
+        this.router.navigate(['/damagelist'], navigationExtras);
+      break;
     }
 
   }

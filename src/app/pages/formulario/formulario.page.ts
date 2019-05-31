@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { Customer } from '../../models/customer';
 import { NavController, LoadingController, AlertController, IonItem } from '@ionic/angular';
@@ -10,7 +10,6 @@ import { Constants } from 'src/app/interfaces/Constants';
 import { Observable, empty } from 'rxjs';
 import { IncidenceService } from '../../services/incidence.service';
 import { Incidence } from '../../models/incidence';
-import { DamagesService } from '../../services/damages.service';
 import { Vehicle } from 'src/app/models/vehicle';
 import { ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 
@@ -131,8 +130,7 @@ export class FormularioPage implements OnInit {
     private dataService: DataService,
     public alertController: AlertController,
     public incidenceService: IncidenceService,
-    public damagesService: DamagesService,
-    public navCtrl: NavController) {
+    private router: Router,) {
       this.buildFormGroupCustomers();
       this.buildFormGroupVehicles();
   }
@@ -423,14 +421,9 @@ export class FormularioPage implements OnInit {
     this.incidence.idInc = String(this.incidenceArray.length + 1);
     this.incidence.idCar = this.vehicle.enrollment;
     this.incidence.state = 'drawImage';
-
-    this.damagesService.setIncidence(this.incidence);
-    this.damagesService.setCustomer(this.customer);
-    this.damagesService.setVehicle(this.vehicle);
     this.incidence.date = new Date().toLocaleDateString();
 
     this.incidenceService.createIncidence(this.incidence);
-    this.damagesService.incidence = this.incidence;
   }
 
   checkCustomer() : string {
@@ -522,7 +515,12 @@ export class FormularioPage implements OnInit {
       } 
 
       this.addIncidence();
-      this.navCtrl.navigateForward(['/drawimage']);
+      let navigationExtras: NavigationExtras = {
+        state: {
+          incidence: this.incidence
+        }
+      };
+      this.router.navigate(['/drawimage'], navigationExtras);
          
     }
   }
@@ -602,7 +600,7 @@ export class FormularioPage implements OnInit {
   }
 
   comeBack(){
-    this.navCtrl.pop();
+    this.router.navigate(['/menu']);
   }
 }
 

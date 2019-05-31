@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DamagesService } from 'src/app/services/damages.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
@@ -40,19 +39,24 @@ export class DrawimagePage implements OnInit {
 
 
   constructor(private formBuilder: FormBuilder,
-    public damageService: DamagesService,
     public detailsService: DetailsService,
-    private navCtrl: NavController,
     private storageAng: AngularFireStorage,
-    private incidenceService: IncidenceService) {
+    private incidenceService: IncidenceService,
+    private route: ActivatedRoute,
+    private router: Router) {
 
-    this.myForm = formBuilder.group({
+    this.myForm = formBuilder.group({ });
 
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.incidence = this.router.getCurrentNavigation().extras.state.incidence;
+      }
     });
+
+    console.log(this.incidence);
   }
 
   ngOnInit(): void {
-    this.incidence = this.damageService.getIncidence();
   }
 
   ngAfterViewInit() {
@@ -69,24 +73,24 @@ export class DrawimagePage implements OnInit {
   }
 
   goDamageList() {
-    this.damageService.setDamages(this.averias);
     this.insertDamagesDetails();
     this.saveCanvasImage();
-    this.navCtrl.navigateForward(['/damagelist']);
+    let navigationExtras: NavigationExtras = {
+      state: {
+        incidence: this.incidence
+      }
+    };
+    this.router.navigate(['/damagelist'], navigationExtras);
   }
 
   insertDamagesDetails() {
-    this.damageService.details.id = this.incidence.idInc;
-    this.damageService.details.damages = this.averias;
-    this.detailsService.createDetails(this.damageService.details);
+    this.details.id = this.incidence.idInc;
+    this.details.damages = this.averias;
+    this.detailsService.createDetails(this.details);
   }
 
   returnMenu() {
-    this.goMenu = true;
-    this.damageService.setDamages(this.averias);
-    this.saveCanvasImage();
-    this.damageService.incidence.idInc = '';
-    this.navCtrl.pop();
+    this.router.navigate(['/menu']);
   }
 
   /**
@@ -129,7 +133,6 @@ export class DrawimagePage implements OnInit {
             this.incidence.state = 'damageList';
           }
           this.incidenceService.updateIncidence(this.incidence);
-          this.damageService.incidence = this.incidence;
         });
       })
       )

@@ -8,8 +8,6 @@ import { Details } from '../models/details';
 })
 export class DetailsService {
 
-  
-
   constructor(private detailsService: AngularFirestore) { }
 
   getAllDetails() {
@@ -22,7 +20,6 @@ export class DetailsService {
 
   createDetails(details: Details){
     return this.detailsService.collection('details').doc(details.id).set(details);
-
   }
 
   updateDetails(details: Details){
