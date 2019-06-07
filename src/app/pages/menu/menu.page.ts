@@ -33,8 +33,9 @@ export class MenuPage implements OnInit {
           id: e.payload.doc.id,
           ...e.payload.doc.data()
         };
-      })
+      });
     });
+    console.log(this.incidenceArray);
   }
 
   public OnLogOut(){

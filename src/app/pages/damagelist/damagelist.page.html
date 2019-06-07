@@ -1,9 +1,9 @@
 <ion-content padding color="medium">
 
-  <ion-card color="light">
+  <ion-card color="primary" class="carroceria">
     <ion-card-header>
       <ion-card-title>
-        <h1>AVERIAS CARROCERIA</h1>
+        <h1 text-center>AVERIAS CARROCERIA</h1>
       </ion-card-title>
     </ion-card-header>
 
@@ -15,39 +15,40 @@
 
   </ion-card>
 
-  <ion-card color="light">
+  <ion-card color="primary" class="internas">
     <ion-card-header>
       <ion-card-title>
-        <h1>AVERIAS INTERNAS</h1>
+        <h1 text-center>AVERIAS INTERNAS</h1>
       </ion-card-title>
     </ion-card-header>
 
-    <ion-list>
+    <ion-list padding>
       <form [formGroup]="myForm">
-          <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index" color="light">
+          <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index">
             <ion-label> {{ i + 1 }} </ion-label>
             <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="details.internDamages[i]"></ion-input>
-            <ion-icon (click)="removeControl(control)" name="close-circle"></ion-icon>
+            <ion-icon (click)="removeControl(control)" name="close-circle" ></ion-icon>
           </ion-item>
       </form>
     </ion-list>
     
-    <ion-button  (click)="addControl()">
-      <ion-icon  name="add-circle"></ion-icon>  
+    <ion-button  (click)="addControl()" style="margin-left: 47%">
+      <ion-icon  name="add-circle" style="font-size: 50px"></ion-icon>  
     </ion-button>
   </ion-card>
 
-</ion-content>
-
-<ion-footer no-border>
-    <ion-toolbar color="medium">    
-        <ion-button (click)="comeback()" color="secondary">
-          <ion-icon name="arrow-back"></ion-icon>
-          Volver
-        </ion-button>
   
-        <ion-button (click)="goSummary()" color="secondary" slot="primary">
-          Continuar
-        </ion-button>
-    </ion-toolbar>
-  </ion-footer>
+
+</ion-content>
+<ion-fab vertical="bottom" horizontal="end" (click)="goSummary()">
+  <ion-fab-button style="width: 120px; height: 120px;" >
+    <ion-icon name="ios-arrow-forward" style="font-size: 70px"></ion-icon>
+    </ion-fab-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="start"  (click)="comeback()">
+    <ion-fab-button style="width: 120px; height: 120px;">
+        <ion-icon name="ios-arrow-back" style="font-size: 70px"></ion-icon>
+    </ion-fab-button>
+   
+</ion-fab>

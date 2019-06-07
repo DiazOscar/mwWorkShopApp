@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Pacifico');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en');
 
 
 .list{
@@ -14,3 +16,26 @@
     padding: 10px;
     border-radius: 25px;
   }
+
+.fab-button{
+  width: 50%;
+  height: 50%;
+}
+
+.text-button{
+  font-size: 4vh!important;
+  font-weight: lighter!important;
+  font-family: 'Pacifico', cursive;
+}
+
+.partes{
+
+  margin-top: 5%;
+  margin-bottom: 5%;
+
+}
+
+.text-center{
+  margin: auto;
+  color: black;
+}
