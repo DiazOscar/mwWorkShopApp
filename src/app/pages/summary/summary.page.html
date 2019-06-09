@@ -1,9 +1,9 @@
 <ion-content padding color="medium" forceOverscroll="false" class="nomargin">
-  <div class="titlewhite">
+
     <ion-label color="dark">
       <h1 text-center class="titulo">RESUMEN DE LA PERITACION</h1>
     </ion-label>
-  </div>
+
   <div class="backgroundwhite">
     <ion-card-header>
       <ion-card-title> AVERIA: {{this.incidence.idInc}} - {{this.incidence.idCar}}</ion-card-title>
@@ -17,34 +17,47 @@
         <ion-title text-center><h1>Averias del vehiculo {{this.incidence.idCar}}</h1></ion-title>
       </ion-list-header>
     </ion-header>
-    
-    <ion-list class="summary">
-      <ion-item>
-        <h3>Carroceria</h3>
-      </ion-item>
-      <ion-item *ngFor="let av of this.details.damages; let i = index;">
-        <ion-text>{{i + 1 }} - {{av}}</ion-text>
-      </ion-item>
-      <ion-item>
-        <h3>Internas</h3>
-      </ion-item>
-      <ion-item *ngFor="let av of this.details.internDamages">
-        <ion-text>{{av}}</ion-text>
-      </ion-item>
-    </ion-list>
   </div>
 
-  <ion-row padding>
-    <ion-col size="5">
-      <ion-button color="success" (click)="okey()" expand="block" size="large" class="btns"> Confirmar</ion-button>
+  <ion-row style="margin-top: 5%">
+    <ion-col size="6">
+        <ion-list class="summary">
+        <ion-toolbar color="primary">
+            <h3 text-center>Carroceria</h3>
+          </ion-toolbar>
+          <ion-item *ngFor="let av of this.details.damages; let i = index;">
+            <ion-text>{{i + 1 }} - {{av}}</ion-text>
+          </ion-item>
+        </ion-list>
     </ion-col>
-    <ion-col size="2">
-      
-    </ion-col>
-    <ion-col  size="5">
-      <ion-button color="warning" (click)="cancelAndCome()" size="large" class="btns"> Cancelar</ion-button>
-      <ion-button color="danger" (click)="deleteAndCome()" size="large" class="btns"> Eliminar</ion-button>
-    </ion-col>
+
+    <ion-col size="6">
+        <ion-list class="summary">
+        <ion-toolbar color="primary">
+            <h3 text-center>Internas</h3>
+          </ion-toolbar>
+          <ion-item *ngFor="let av of this.details.internDamages">
+            <ion-text>{{av}}</ion-text>
+          </ion-item>
+        </ion-list>
+      </ion-col>
   </ion-row>
 </ion-content>
+
+<ion-footer no-border>
+  <ion-toolbar color="medium">
+
+          <ion-button color="success" slot="start" (click)="okey()" expand="block" size="large" class="btns"> 
+            <ion-icon name="checkmark-circle-outline" style="font-size: 50px;"></ion-icon>
+          </ion-button>
+
+          <ion-button color="warning" (click)="cancelAndCome()" size="large" class="btns" slot="end" >
+            <ion-icon name="close-circle-outline" style="font-size: 50px;"></ion-icon>
+          </ion-button>
+    
+          <ion-button color="danger" (click)="deleteAndCome()" size="large" class="btns" slot="end">
+            <ion-icon name="trash" slot="icon-only" style="font-size: 50px;"></ion-icon>
+          </ion-button>
+  </ion-toolbar>
+</ion-footer>
 

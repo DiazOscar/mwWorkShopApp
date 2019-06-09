@@ -7,20 +7,21 @@
   <!-- (touchmove)="handleMove($event)" -->
   <!-- (touchend)="handleEnd($event)" -->
 
-  <div class="backgroundwhite">
-      <ion-header>
-          <ion-row>
-              <ion-col size="10">
-                  <ion-card-title>
-                      <h1>AVERIAS: {{this.incidence.idInc}}</h1>            
-                  </ion-card-title>
-              </ion-col>
-              <ion-col right>
-                  <ion-button (click)="clearAll()"> Limpiar</ion-button>
-              </ion-col>
-          </ion-row>
-      </ion-header>
+
+      
         <ion-list class="list">
+                <ion-toolbar color="primary">
+                        <ion-row>
+                            <ion-col size="10">
+                                <ion-card-title color="primary">
+                                    <h1 style="color: white">AVERIAS: {{this.incidence.idInc}}</h1>            
+                                </ion-card-title>
+                            </ion-col>
+                            <ion-col right>
+                                <ion-button color="light" (click)="clearAll()">Limpiar</ion-button>
+                            </ion-col>
+                        </ion-row>
+                    </ion-toolbar>
             <form [formGroup]="myForm">
                 <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index" color="light">
                     <ion-label> {{i + 1}} </ion-label>
@@ -29,25 +30,34 @@
                 </ion-item>
             </form>
         </ion-list>
-  </div>
-
-  
 </ion-content>
 
-<ion-footer>
-    <ion-toolbar color="medium" no-border>
-        <ion-buttons slot="start">
-            <ion-button color="secondary" fill="solid" size="large" (click)="returnMenu()">
-                <ion-icon slot="start" name="arrow-round-back"></ion-icon>
-                Volver
-            </ion-button>
-        </ion-buttons>
 
-        <ion-buttons slot="end">
-            <ion-button color="secondary" size="large" fill="solid" (click)="goDamageList()">
-                <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
-                Continuar
-            </ion-button>
-        </ion-buttons>
-    </ion-toolbar>
-</ion-footer>
+    <ion-fab vertical="bottom" horizontal="end" (click)="goDamageList()" >
+        <ion-fab-button style="width: 60px; height: 60px;margin-top: 10%;" >
+            <ion-icon name="ios-arrow-forward" style="font-size: 35px"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
+                  
+        <ion-fab vertical="bottom" horizontal="start"  (click)="returnMenu()">
+            <ion-fab-button style="width: 60px; height: 60px;">
+                <ion-icon name="ios-arrow-back" style="font-size: 35px"></ion-icon>
+            </ion-fab-button>
+    </ion-fab>
+
+
+<!--
+<ion-buttons slot="start">
+        <ion-button color="primary" fill="solid" size="large" (click)="returnMenu()">
+            <ion-icon slot="start" name="arrow-round-back"></ion-icon>
+            Volver
+        </ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+        <ion-button color="primary" size="large" fill="solid" (click)="goDamageList()">
+            <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+            Continuar
+        </ion-button>
+    </ion-buttons>
+    -->
