@@ -418,12 +418,21 @@ export class FormularioPage implements OnInit {
   }
 
   async addIncidence () {
-    this.incidence.idInc = String(this.incidenceArray.length + 1);
+    let date = this.vehicle.enrollment + new  Date().toLocaleDateString();
+    date = date.replace('/', '');
+    date = date.replace('/', '');
+
+    
+    this.incidence.idInc = date;
     this.incidence.idCar = this.vehicle.enrollment;
     this.incidence.state = 'drawImage';
     this.incidence.date = new Date().toLocaleDateString();
-
-    this.incidenceService.createIncidence(this.incidence);
+    try{
+      this.incidenceService.createIncidence(this.incidence);
+    }catch(err){
+      console.log('aqui');
+    }
+    
   }
 
   checkCustomer() : string {
