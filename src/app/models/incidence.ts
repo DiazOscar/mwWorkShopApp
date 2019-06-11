@@ -4,5 +4,6 @@ export class Incidence {
     state: string;
     imageName: string;
     imagePath: string;
+    imageB64: string;
     date: string;
 }

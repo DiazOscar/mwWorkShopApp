@@ -127,7 +127,8 @@ export class SummaryPage implements OnInit {
       'car': this.incidence.idCar,
       'date': this.incidence.date,
       'image': this.incidence.imageName,
-      'imagePath': this.incidence.imagePath
+      'imagePath': this.incidence.imagePath,
+      'imageB64': this.incidence.imageB64
     };
 
     this.damageFService.createIncidence(damage);

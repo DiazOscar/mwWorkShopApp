@@ -53,6 +53,7 @@ export class FormularioPage implements OnInit {
     state: '',
     imageName: '',
     imagePath: '',
+    imageB64: '',
     date: ''
   };
 
@@ -419,14 +420,16 @@ export class FormularioPage implements OnInit {
 
   async addIncidence () {
     let date = this.vehicle.enrollment + new  Date().toLocaleDateString();
-    date = date.replace('/', '');
-    date = date.replace('/', '');
 
+    while(date.includes('/')){
+      date = date.replace('/', '');
+    }
     
     this.incidence.idInc = date;
     this.incidence.idCar = this.vehicle.enrollment;
     this.incidence.state = 'drawImage';
     this.incidence.date = new Date().toLocaleDateString();
+    this.incidence.imageB64 = '';
     try{
       this.incidenceService.createIncidence(this.incidence);
     }catch(err){

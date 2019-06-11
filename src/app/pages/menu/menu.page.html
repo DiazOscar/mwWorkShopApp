@@ -20,12 +20,12 @@
       <div *ngSwitchCase="'damageList'">
 
         <ion-item (click)="goIncident(inc)" color="medium">
-          <ion-avatar style="width: 85px; height: 85px;">
+          <ion-avatar >
             <img src="assets/icon/notepad.png">
           </ion-avatar>
-          <h1 style="margin-left: 5%;color: black">{{ inc.idInc }}</h1>
-          <h1 class="text-center">Vehiculo: {{inc.idCar}}</h1>
-          <h1 style="color: black" slot="end">{{inc.date}}</h1>
+          <h2 style="margin-left: 5%;color: black">{{ inc.idInc }}</h2>
+          <h2 class="text-center">{{inc.idCar}}</h2>
+          <h2 style="color: black" slot="end">{{inc.date}}</h2>
         </ion-item>
         <ion-item-options side="end">
           <ion-item-option (click)="deleteIncidence(inc)" color="danger">
@@ -36,12 +36,12 @@
       </div>
       <div *ngSwitchDefault>
         <ion-item (click)="goIncident(inc)" color="medium">
-          <ion-avatar style="width: 85px; height: 85px;">
+          <ion-avatar >
             <img src="assets/icon/damage.png">
           </ion-avatar>
-          <h1 style="margin-left: 5%;color: black">{{ inc.idInc }}</h1>
-          <h1 class="text-center">Vehiculo: {{inc.idCar}}</h1>
-          <h1 style="color: black" slot="end">{{inc.date}}</h1>
+          <h2 style="margin-left: 5%;color: black">{{ inc.idInc }}</h2>
+          <h2 class="text-center">{{inc.idCar}}</h2>
+          <h2 style="color: black" slot="end">{{inc.date}}</h2>
         </ion-item>
         <ion-item-options side="end">
           <ion-item-option (click)="deleteIncidence(inc)" color="danger">

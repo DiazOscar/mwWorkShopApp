@@ -50,6 +50,7 @@ export class DrawimagePage implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.incidence = this.router.getCurrentNavigation().extras.state.incidence;
+        console.log(this.incidence);
       }
     });
 
@@ -79,6 +80,7 @@ export class DrawimagePage implements OnInit {
       state: {
         incidence: this.incidence
       }
+      
     };
     this.router.navigate(['/damagelist'], navigationExtras);
   }
@@ -124,6 +126,7 @@ export class DrawimagePage implements OnInit {
           url = data;
           this.incidence.imageName = name;
           this.incidence.imagePath = url;
+          this.incidence.imageB64 = dataURL;
           if (this.goMenu) {
             /**Si en la vista pulsas el boton volver te setea el estado de la incidencia a drawImage, si
              * es el de continuar de continuar a damageList para que luego en el menu sepa hacia donde volver.
@@ -132,7 +135,10 @@ export class DrawimagePage implements OnInit {
           } else {
             this.incidence.state = 'damageList';
           }
+
+          console.log(this.incidence)
           this.incidenceService.updateIncidence(this.incidence);
+
         });
       })
       )
