@@ -50,7 +50,7 @@ export class DrawimagePage implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.incidence = this.router.getCurrentNavigation().extras.state.incidence;
-        console.log(this.incidence);
+        console.log('INCIDENCIA ', this.incidence);
       }
     });
 
@@ -92,6 +92,8 @@ export class DrawimagePage implements OnInit {
   }
 
   returnMenu() {
+    this.incidence.state = 'drawImage';
+    this.incidenceService.updateIncidence(this.incidence);
     this.router.navigate(['/menu']);
   }
 
@@ -110,7 +112,7 @@ export class DrawimagePage implements OnInit {
 
   async saveCanvasImage() {
     let url = '';
-    let name =this.incidence.idInc + '.png';
+    let name = this.incidence.idInc + '.png';
 
     let dataURL = this.canvasElement.toDataURL('image/png', 0.5);
     let blob = this.dataURItoBlob(dataURL);

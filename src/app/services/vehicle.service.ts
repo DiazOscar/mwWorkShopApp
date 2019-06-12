@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Vehicle } from '../models/vehicle';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -12,15 +10,15 @@ export class VehicleService {
   constructor(private firestore: AngularFirestore) {   }
 
   checkEnrollment(vehicle: Vehicle) {
-    const usersCollection = this.firestore.collection('vehicles').doc(vehicle.enrollment).get().toPromise().then(function(data){
-      if(data.exists){
+    const usersCollection = this.firestore.collection('vehicles').doc(vehicle.enrollment).get().toPromise().then( function(data) {
+      if (data.exists) {
         vehicle.enrollment = data.get('enrollment');
         vehicle.brand = data.get('brand');
         vehicle.model = data.get('model');
         vehicle.kilometers = data.get('kilometers');
         vehicle.color = data.get('color');
         vehicle.year = data.get('year');
-      } else{
+      } else {
         console.log('no existe');
       }
     });
@@ -30,18 +28,20 @@ export class VehicleService {
     return this.firestore.collection('vehicles').snapshotChanges();
   }
 
-  getVehicle(enrollment){
+  getVehicle(enrollment) {
     return this.firestore.collection('vehicles').doc(enrollment).snapshotChanges();
   }
 
-  createVehicle(vehicle: Vehicle){
+  createVehicle(vehicle: Vehicle) {
     vehicle.year = vehicle.year.substring(0, 4);
     return this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }
 
-  updateVehicle(vehicle: Vehicle){
+  updateVehicle(vehicle: Vehicle) {
     vehicle.year = vehicle.year.substring(0, 4);
+    console.log('update vehicle', vehicle.enrollment);
+    console.log('update vehicle', vehicle);
     this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }
-  
+
 }

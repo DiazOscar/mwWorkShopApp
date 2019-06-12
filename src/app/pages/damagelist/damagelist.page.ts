@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DetailsService } from '../../services/details.service';
-import { NavController } from '@ionic/angular';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { NavController, AlertController } from '@ionic/angular';
+import { ActivatedRoute, Router, NavigationExtras, PRIMARY_OUTLET } from '@angular/router';
 import { Incidence } from 'src/app/models/incidence';
 import { Details } from 'src/app/models/details';
 
@@ -14,7 +14,7 @@ import { Details } from 'src/app/models/details';
 export class DamagelistPage implements OnInit {
 
   incidence: Incidence;
-  details: Details ={
+  details: Details = {
     id: '',
     damages: [],
     internDamages: []
@@ -28,7 +28,8 @@ export class DamagelistPage implements OnInit {
     private formBuilder: FormBuilder,
     private navCtrl:NavController,
     private route: ActivatedRoute,
-    private router: Router) { 
+    private router: Router,
+    private alertControler: AlertController) {
 
     this.myForm = this.formBuilder.group({  });
 
@@ -36,10 +37,8 @@ export class DamagelistPage implements OnInit {
       if (this.router.getCurrentNavigation().extras.state) {
         this.incidence = this.router.getCurrentNavigation().extras.state.incidence;
       }
-      console.log(this.incidence);
+      console.log('DAMAGE LIST INCIDENCIA',this.incidence);
     });
-
-    
 }
 
   ngOnInit() {
@@ -47,65 +46,116 @@ export class DamagelistPage implements OnInit {
      * hemos accedido seleccionando el item del menu y si esta a false es que se ha accedido
      * desde la vista drawImage al darle a continuar.
      */
-
-    
       this.detailsService.getDetail(this.incidence.idInc).subscribe( (damSnapshot) => {
       this.details.id = damSnapshot.payload.get('id');
       this.details.damages = damSnapshot.payload.get('damages');
       this.details.internDamages = damSnapshot.payload.get('internDamages');
-              
+
       console.log(this.details);
-      for(let c of this.details.internDamages){
+      for (let c of this.details.internDamages) {
         this.addControl();
       }
-    });     
+    });
   }
 
-  addControl(){
-    if(this.count < 10){
-      this.myForm.addControl('0'+(this.count), new FormControl('', Validators.required));
+  addControl() {
+    if (this.count < 10) {
+      this.myForm.addControl('0' + (this.count), new FormControl('', Validators.required));
       this.forms.push({
-        "form": '0'+(this.count)
-      })
+        "form": '0' + (this.count)
+      });
       this.count ++;
-    }else{
+    } else {
       this.myForm.addControl(String(this.details.internDamages.length), new FormControl('', Validators.required));
       this.forms.push({
         "form": this.count
-      })
+      });
       this.count ++;
-    }    
+    }
 
     console.log(this.details.internDamages);
   }
 
-  removeControl(control){
+  removeControl(control) {
     this.myForm.removeControl(control.key);
 
     for (let i = 0; i < this.forms.length; i++) {
-      if(this.forms[i].form == control.key){
+      if(this.forms[i].form == control.key) {
         this.details.internDamages.splice(i, 1);
         this.forms.splice(i, 1);
       }
-    }    
+    }
   }
 
-  goSummary( ){
-    this.addInternalDamages();
-    let navigationExtras: NavigationExtras = {
-      state: {
-        incidence: this.incidence
+  checkListInternDamages(details: Details): Boolean {
+    let resp: Boolean = false;
+    if (details.damages.length == 0) {
+      console.log('AVERIAS EXTERNAS ESTA VACIA');
+      if (details.internDamages.length < 1) {
+        console.log('AVERIAS INTERNAS TIENE QUE ESTAR RELLENO');
+        resp = false;
+      } else {
+        resp = true;
       }
-    };
-    this.router.navigate(['/summary'], navigationExtras);
+    } else {
+      console.log('AVERIAS EXTERNAS TIENE DATOS');
+      resp = true;
+    }
+    return resp;
   }
+
+   goSummary(details: Details ) {
+    if (this.checkListInternDamages(details)) {
+      this.addInternalDamages();
+      let navigationExtras: NavigationExtras = {
+        state: {
+          incidence: this.incidence
+        }
+      };
+      this.router.navigate(['/summary'], navigationExtras);
+    } else {
+      this.alertCheckDamages();
+    }
+  }
+
+  async alertCheckDamages() {
+
+    const alert = await this.alertControler.create({
+      animated: true,
+      header: 'Lista de averias vacia',
+      message: 'Los datos de la averia no pueden estar vacios. Introduzca datos',
+      buttons: [
+        {
+          text: 'Volver averias de carroceria',
+          role: 'cancelar',
+          cssClass: 'secondary',
+          handler: () => {
+            let navigationExtras: NavigationExtras = {
+              state: {
+                incidence: this.incidence
+              }
+            };
+            this.router.navigate(['/drawimage'], navigationExtras);
+          }
+        }, {
+          text: 'Quedarse aqui',
+          role: 'aceptar',
+          cssClass: 'primary',
+          handler: () => {
+          }
+        }
+      ]
+    });
+    await alert.present();
+ }
 
   addInternalDamages() {
     this.detailsService.updateDetails(this.details);
   }
 
-  comeback(){
+  comeback() {
     this.navCtrl.pop();
+   // this.router.navigate(['/menu']);
   }
 
 }

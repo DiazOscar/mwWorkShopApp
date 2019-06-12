@@ -141,7 +141,7 @@ export class FormularioPage implements OnInit {
 
     this.customerService.getAllCustomer().subscribe((custSnapshot) => {
       this.customerArray = [];
-      custSnapshot.forEach((custData: any)=> {
+      custSnapshot.forEach((custData: any) => {
         this.customerArray.push({
           id: custData.payload.doc.id,
           data :custData.payload.doc.data()
@@ -151,12 +151,12 @@ export class FormularioPage implements OnInit {
 
     this.vehicleService.getAllVehicle().subscribe((vehSnapshot) => {
       this.vehicleArray = [];
-      vehSnapshot.forEach((vehData: any)=> {
+      vehSnapshot.forEach((vehData: any) => {
         this.vehicleArray.push({
           id: vehData.payload.doc.id,
           data: vehData.payload.doc.data()
         });
-      })
+      });
     });
 
     this.incidenceService.getAllIncidence().subscribe((incSnapshot) => {
@@ -282,7 +282,9 @@ export class FormularioPage implements OnInit {
   }
 
   async checkUpdate(number: number) {
-
+    console.log('VEHICULO NGMODEL',this.vehicle);
+    console.log('vehiculo array', this.vehicleArray);
+    console.log('auxArray', this.auxVehicleArray);
      const alert = await this.alertController.create({
        header: 'Actualizar Datos',
        message: 'Los datos del usuario o vehiculo han cambiado, si aceptas se actualizaran dichos datos',
@@ -299,22 +301,25 @@ export class FormularioPage implements OnInit {
            role: 'aceptar',
            cssClass: 'primary',
            handler: () => {
-             switch(number){
+             switch (number) {
                case 1:
                 this.customerService.updateCustomer(this.customer);
+                this.goDrawImage();
                 break;
 
-              case 2: 
+              case 2:
                 this.vehicleService.updateVehicle(this.vehicle);
+                this.goDrawImage();
                 break;
 
               case 3:
                 this.customerService.updateCustomer(this.customer);
                 this.vehicleService.updateVehicle(this.vehicle);
+                this.goDrawImage();
                 break;
 
               default:
-                console.log("modificar fallo"); 
+                console.log(' modificar fallo ');
                 break;
              }
            }
@@ -322,7 +327,6 @@ export class FormularioPage implements OnInit {
        ]
      });
      await alert.present();
-    
   }
 
  checkEmptyCustomer(): Boolean {
@@ -418,13 +422,13 @@ export class FormularioPage implements OnInit {
     }, { updateOn: 'blur' });
   }
 
-  async addIncidence () {
+  async addIncidence() {
     let date = this.vehicle.enrollment + new  Date().toLocaleDateString();
 
-    while(date.includes('/')){
+    while(date.includes('/')) {
       date = date.replace('/', '');
     }
-    
+
     this.incidence.idInc = date;
     this.incidence.idCar = this.vehicle.enrollment;
     this.incidence.state = 'drawImage';
@@ -432,115 +436,119 @@ export class FormularioPage implements OnInit {
     this.incidence.imageB64 = '';
     try{
       this.incidenceService.createIncidence(this.incidence);
-    }catch(err){
+    } catch (err) {
       console.log('aqui');
     }
-    
+
   }
 
-  checkCustomer() : string {
-    let resp: string = "crear";
-    for(let cus of this.customerArray){
-      if(this.customer.nif == cus.data.nif){
-        console.log(this.customer, cus);
-        if(this.customer.name != cus.data.name ||
+  checkCustomer(): string {
+    let resp: string = 'crear';
+    for (let cus of this.customerArray) {
+      if (this.customer.nif == cus.data.nif) {
+
+        if (this.customer.name != cus.data.name ||
             this.customer.phone != cus.data.phone ||
             this.customer.email != cus.data.email ||
-            this.customer.address != cus.data.address){
-              console.log('enra');
+            this.customer.address != cus.data.address) {
               this.customerDoc = cus.id;
-              return resp = "modificar";
-        }else{
-          resp = "igual";
+              return resp = 'modificar';
+        } else {
+          resp = 'igual';
         }
       }
     }
-    console.log(resp);
     return resp;
   }
 
-  checkVehicle() : string {
-    let resp: string = "crear";
+  checkVehicle(): string {
+    let resp: string = 'crear';
 
-    for(let veh of this.vehicleArray){
-      if(this.vehicle.enrollment == veh.data.enrollment){
-        console.log(this.vehicle, veh);
-        if(this.vehicle.brand != veh.data.brand ||
+    for (let veh of this.auxVehicleArray) {
+      if (this.vehicle.enrollment == veh.data.enrollment) {
+        
+        if (this.vehicle.brand != veh.data.brand ||
             this.vehicle.model != veh.data.model ||
             this.vehicle.kilometers != veh.data.kilometers ||
             this.vehicle.color != veh.data.color ||
-            this.vehicle.year.substring(0,4) != veh.data.year){
+            this.vehicle.year.substring(0,4) != veh.data.year) {
             this.vehicleDoc = veh.id;
-            return "modificar";
-        }else{
-          console.log("igual");
-          resp = "igual";
+            return 'modificar';
+        } else {
+          console.log('HEY VEHICLE', this.vehicle);
+        console.log('HEY VEH',veh);
+          console.log('igual');
+          resp = 'igual';
         }
       }
     }
-
+    console.log();
     return resp;
   }
 
   continue(){
     //console.log(this.customerArray);
-    if(this.checkEmptyCustomer() && this.checkEmptyVehicle()){
+    if (this.checkEmptyCustomer() && this.checkEmptyVehicle()) {
       let opcionC: string = this.checkCustomer();
       let numberOp: number = 0;
 
-      switch(opcionC){
-        case "crear":
+      switch (opcionC) {
+        case 'crear':
           this.customerService.createCustomer(this.customer);
           break;
 
-        case "modificar":
+        case 'modificar':
           numberOp = numberOp + 1;
           break;
 
-        case "igual":
+        case 'igual':
           console.log(opcionC);
           break;
       }
       let opcionV: string = this.checkVehicle();
+      console.log('AQUII', opcionV);
 
-      switch(opcionV){
-        case "crear":
+      switch (opcionV) {
+        case 'crear':
           this.vehicle.owner = this.customer.nif;
           this.vehicleService.createVehicle(this.vehicle);
           break;
 
-        case "modificar":
+        case 'modificar':
           this.vehicle.owner = this.customer.nif;
           numberOp = numberOp + 2;
           break;
 
-        case "igual":
+        case 'igual':
           console.log(opcionV);
           break;
       }
 
-      console.log(numberOp);
+      console.log('number op',numberOp);
 
       if (numberOp != 0) {
         this.checkUpdate(numberOp);
 
-      } 
-
-      this.addIncidence();
-      let navigationExtras: NavigationExtras = {
-        state: {
-          incidence: this.incidence
-        }
-      };
-      this.router.navigate(['/drawimage'], navigationExtras);
-         
+      } else {
+        this.goDrawImage();
+      }
     }
+  }
+
+  goDrawImage(){
+    this.addIncidence();
+    let navigationExtras: NavigationExtras = {
+      state: {
+        incidence: this.incidence
+      }
+    };
+    this.router.navigate(['/drawimage'], navigationExtras);
   }
 
   checkNifCustomer() {
     this.auxVehicleArray = [];
-    for(let cust of this.customerArray){
-      if(this.customer.nif == cust.data.nif){
+    for (let cust of this.customerArray) {
+      if (this.customer.nif == cust.data.nif) {
         this.existCustomer = true;
         this.customer.name = cust.data.name;
         this.customer.email = cust.data.email;
@@ -551,7 +559,7 @@ export class FormularioPage implements OnInit {
     //Si el usuario existe recorro la lista de vehiculos y guardo en un array Auxiliar los vehiculos que pertenezcan al cliente
     if (this.existCustomer) {
       for (let vech of this.vehicleArray) {
-        if (vech.data.owner == this.customer.nif) {          
+        if (vech.data.owner == this.customer.nif) {
           this.auxVehicleArray.push(vech);
           console.log(this.auxVehicleArray);
         }
@@ -561,12 +569,18 @@ export class FormularioPage implements OnInit {
   }
 
   getVehicleCustomer(event) {
-    
     console.log(event);
      for (let auxV of this.auxVehicleArray) {
        console.log(String(event.detail.value.length), auxV.data.enrollment.length);
       if(event.detail.value == auxV.data.enrollment) {
-         this.vehicle = auxV.data;
+
+         this.vehicle.enrollment = auxV.data.enrollment;
+         this.vehicle.kilometers = auxV.data.kilometers;
+         this.vehicle.model = auxV.data.model;
+         this.vehicle.brand = auxV.data.brand;
+         this.vehicle.owner = auxV.data.owner;
+         this.vehicle.year = auxV.data.year;
+         this.vehicle.color = auxV.data.color;
        }
     }
 

@@ -13,6 +13,9 @@ export class AuthService {
     
   }
 
+  getAngularFireAuth(){
+    return this.AFAuth.auth;
+  }
   login(email:string, password:string){
 
       return new Promise((resolve, rejected) => {
@@ -20,7 +23,7 @@ export class AuthService {
                 resolve(user)
 
               }).catch(err => rejected(err))
-      });  
+      });
   }
 
   logout(){

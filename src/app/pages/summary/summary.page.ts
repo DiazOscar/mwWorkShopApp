@@ -50,7 +50,7 @@ export class SummaryPage implements OnInit {
     
   }
 
-  ngOnInit() {    
+  ngOnInit() {
 
     this.detailsService.getDetail(this.incidence.idInc).subscribe( (damSnapshot) => {
       this.details.id = damSnapshot.payload.get('id');
@@ -77,8 +77,8 @@ export class SummaryPage implements OnInit {
       })
     }, 350);
 
-    console.log(this.incidence);
-    
+    console.log('INCIDENCIA SUMMARY',this.incidence);
+    console.log('CUSTOMER',this.customer);
   }
 
   setBackgroundImage(){
