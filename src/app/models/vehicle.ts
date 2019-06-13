@@ -7,4 +7,5 @@ export class Vehicle {
     public kilometers: string;
     public color: string;
     public year: string;
+    public gas: string;
 }

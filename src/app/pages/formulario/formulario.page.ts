@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { Customer } from '../../models/customer';
-import { NavController, LoadingController, AlertController, IonItem } from '@ionic/angular';
+import { NavController, LoadingController, AlertController, IonItem, ToastController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, FormBuilder, NgControlStatus } from '@angular/forms';
 import { VehicleService } from '../../services/vehicle.service';
 import { DataService } from '../../services/data.service';
@@ -12,8 +12,6 @@ import { IncidenceService } from '../../services/incidence.service';
 import { Incidence } from '../../models/incidence';
 import { Vehicle } from 'src/app/models/vehicle';
 import { ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-
-
 
 @Component({
   selector: 'app-formulario',
@@ -31,8 +29,8 @@ export class FormularioPage implements OnInit {
 
   customer: Customer = {
     nif: '',
-    name: '', 
-    phone: '', 
+    name: '',
+    phone: '',
     address: '',
     email: ''
   };
@@ -43,13 +41,14 @@ export class FormularioPage implements OnInit {
     model: '',
     kilometers: '',
     color: '',
-    year:'',
-    owner: ''
+    year: '',
+    owner: '',
+    gas: ''
   };
 
   incidence: Incidence = {
     idInc: '',
-    idCar: '', 
+    idCar: '',
     state: '',
     imageName: '',
     imagePath: '',
@@ -108,6 +107,9 @@ export class FormularioPage implements OnInit {
           'year': [
             { type: 'required', message: 'Introduce el año del coche' },
             { type: 'pattern', message: 'Solo números de dos cifras' }
+          ],
+          'gas': [
+            { type: 'required', message: 'Campo Obligatorio' }
           ]
   };
 
@@ -131,7 +133,7 @@ export class FormularioPage implements OnInit {
     private dataService: DataService,
     public alertController: AlertController,
     public incidenceService: IncidenceService,
-    private router: Router,) {
+    private router: Router,public toastCtrl: ToastController) {
       this.buildFormGroupCustomers();
       this.buildFormGroupVehicles();
   }
@@ -144,7 +146,7 @@ export class FormularioPage implements OnInit {
       custSnapshot.forEach((custData: any) => {
         this.customerArray.push({
           id: custData.payload.doc.id,
-          data :custData.payload.doc.data()
+          data : custData.payload.doc.data()
         });
       });
     });
@@ -161,18 +163,16 @@ export class FormularioPage implements OnInit {
 
     this.incidenceService.getAllIncidence().subscribe((incSnapshot) => {
       this.incidenceArray = [];
-      incSnapshot.forEach((incData: any)=> {
+      incSnapshot.forEach((incData: any) => {
         this.incidenceArray.push({
           id: incData.payload.doc.id,
-          data :incData.payload.doc.data()
+          data : incData.payload.doc.data()
         });
-      })
+      });
     });
     /*Recojo los datos del json y los guardo en estas variables*/
     this.constantVehicles = this.dataService.getConstantVehicles();
     this.constantCustomers = this.dataService.getConstantCustomers();
-
-    //COMPROBAR BIEN DATOS - JSON ERROR MESSAGE
   }
 
   public getErrorCustomers(controlName: string): string {
@@ -389,7 +389,7 @@ export class FormularioPage implements OnInit {
       email: new FormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-      ])),
+      ]))
     }, { updateOn: 'blur' });
   }
 
@@ -418,6 +418,9 @@ export class FormularioPage implements OnInit {
       year: new FormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[0-9]{4}$')
+      ])),
+      gas: new FormControl('', Validators.compose([
+        Validators.required
       ])),
     }, { updateOn: 'blur' });
   }
@@ -466,12 +469,12 @@ export class FormularioPage implements OnInit {
 
     for (let veh of this.auxVehicleArray) {
       if (this.vehicle.enrollment == veh.data.enrollment) {
-        
         if (this.vehicle.brand != veh.data.brand ||
             this.vehicle.model != veh.data.model ||
             this.vehicle.kilometers != veh.data.kilometers ||
             this.vehicle.color != veh.data.color ||
-            this.vehicle.year.substring(0,4) != veh.data.year) {
+            this.vehicle.year.substring(0,4) != veh.data.year ||
+            this.vehicle.gas != veh.data.gas) {
             this.vehicleDoc = veh.id;
             return 'modificar';
         } else {
@@ -486,56 +489,89 @@ export class FormularioPage implements OnInit {
     return resp;
   }
 
-  continue(){
-    //console.log(this.customerArray);
-    if (this.checkEmptyCustomer() && this.checkEmptyVehicle()) {
-      let opcionC: string = this.checkCustomer();
-      let numberOp: number = 0;
-
-      switch (opcionC) {
-        case 'crear':
-          this.customerService.createCustomer(this.customer);
-          break;
-
-        case 'modificar':
-          numberOp = numberOp + 1;
-          break;
-
-        case 'igual':
-          console.log(opcionC);
-          break;
-      }
-      let opcionV: string = this.checkVehicle();
-      console.log('AQUII', opcionV);
-
-      switch (opcionV) {
-        case 'crear':
-          this.vehicle.owner = this.customer.nif;
-          this.vehicleService.createVehicle(this.vehicle);
-          break;
-
-        case 'modificar':
-          this.vehicle.owner = this.customer.nif;
-          numberOp = numberOp + 2;
-          break;
-
-        case 'igual':
-          console.log(opcionV);
-          break;
-      }
-
-      console.log('number op',numberOp);
-
-      if (numberOp != 0) {
-        this.checkUpdate(numberOp);
-
-      } else {
-        this.goDrawImage();
-      }
+  checklengthCustomVehi(): Boolean {
+    let answer: Boolean = false;
+    if (this.customer.address.length == 0 || this.customer.email.length == 0
+        || this.customer.name.length == 0 || this.customer.nif.length == 0 ||
+        this.customer.phone.length == 0) {
+         answer = true;
     }
+    if (this.vehicle.brand.length == 0 || this.vehicle.color.length == 0 ||
+      this.vehicle.enrollment.length == 0 || this.vehicle.gas.length == 0 || this.vehicle.kilometers.length == 0
+       || this.vehicle.model.length == 0 || this.vehicle.year.length == 0 ) {
+          answer = true;
+    }
+    return answer;
   }
 
-  goDrawImage(){
+  async toast() {
+    const toast = await this.toastCtrl.create({
+      message: 'Todos los datos tienen que estar introducidos',
+      color: 'light',
+      duration: 2000,
+      mode: 'ios',
+      cssClass: 'toastcss',
+    });
+
+    toast.present();
+  }
+
+  continue() {
+    if (this.checklengthCustomVehi()) {
+      this.toast();
+    } else {
+      if (this.checkEmptyCustomer() && this.checkEmptyVehicle()) {
+        let opcionC: string = this.checkCustomer();
+        let numberOp: number = 0;
+
+        switch (opcionC) {
+          case 'crear':
+            this.customerService.createCustomer(this.customer);
+            break;
+
+          case 'modificar':
+            numberOp = numberOp + 1;
+            break;
+
+          case 'igual':
+            console.log(opcionC);
+            break;
+        }
+        let opcionV: string = this.checkVehicle();
+        console.log('AQUII', opcionV);
+
+        switch (opcionV) {
+          case 'crear':
+            this.vehicle.owner = this.customer.nif;
+            this.vehicleService.createVehicle(this.vehicle);
+            break;
+
+          case 'modificar':
+            this.vehicle.owner = this.customer.nif;
+            numberOp = numberOp + 2;
+            break;
+
+          case 'igual':
+            console.log(opcionV);
+            break;
+        }
+
+        console.log('number op',numberOp);
+
+        if (numberOp != 0) {
+          this.checkUpdate(numberOp);
+
+        } else {
+          this.goDrawImage();
+        }
+      }
+    }
+    
+  }
+
+
+
+  goDrawImage() {
     this.addIncidence();
     let navigationExtras: NavigationExtras = {
       state: {
@@ -581,6 +617,7 @@ export class FormularioPage implements OnInit {
          this.vehicle.owner = auxV.data.owner;
          this.vehicle.year = auxV.data.year;
          this.vehicle.color = auxV.data.color;
+         this.vehicle.gas = auxV.data.gas;
        }
     }
 
@@ -625,7 +662,7 @@ export class FormularioPage implements OnInit {
 
   }
 
-  comeBack(){
+  comeBack() {
     this.router.navigate(['/menu']);
   }
 }
