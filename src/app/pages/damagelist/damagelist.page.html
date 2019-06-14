@@ -3,13 +3,25 @@
   <ion-card color="primary" class="carroceria">
     <ion-card-header>
       <ion-card-title>
-        <h1 text-center>AVERIAS CARROCERIA</h1>
+        <ion-row>
+          <ion-col size="10">
+            <h1 text-center>AVERIAS CARROCERIA</h1>
+          </ion-col>
+          <ion-col size="2">
+              <ion-button (click)="goDraw()" fill="solid" color="light">
+                Editar
+              </ion-button>
+          </ion-col>
+        </ion-row>
+
+
       </ion-card-title>
+
     </ion-card-header>
 
-    <ion-list >
+    <ion-list>
       <ion-item *ngFor="let damage of details.damages">
-        <h2>{{damage}} </h2>
+        <h2>{{damage.info}} </h2>
       </ion-item>
     </ion-list>
 
@@ -24,28 +36,29 @@
 
     <ion-list padding>
       <form [formGroup]="myForm">
-          <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index">
-            <ion-label> {{ i + 1 }} </ion-label>
-            <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="details.internDamages[i]"></ion-input>
-            <ion-icon (click)="removeControl(control)" name="close-circle" ></ion-icon>
-          </ion-item>
+        <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index">
+          <ion-label> {{ i + 1 }} </ion-label>
+          <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..."
+            [(ngModel)]="details.internDamages[i]"></ion-input>
+          <ion-icon (click)="removeControl(control)" name="close-circle"></ion-icon>
+        </ion-item>
       </form>
     </ion-list>
-    
-    <ion-button  (click)="addControl()" style="margin-left: 47%">
-      <ion-icon  name="add-circle" style="font-size: 50px"></ion-icon>  
+
+    <ion-button (click)="addControl()" style="margin-left: 47%">
+      <ion-icon name="add-circle" style="font-size: 50px"></ion-icon>
     </ion-button>
   </ion-card>
 </ion-content>
 <ion-fab vertical="bottom" horizontal="end" (click)="goSummary(details)">
-  <ion-fab-button style="width: 60px; height: 60px;" >
+  <ion-fab-button style="width: 60px; height: 60px;">
     <ion-icon name="ios-arrow-forward" style="font-size: 35px"></ion-icon>
-    </ion-fab-button>
+  </ion-fab-button>
 </ion-fab>
 
-<ion-fab vertical="bottom" horizontal="start"  (click)="comeback()">
-    <ion-fab-button style="width: 60px; height: 60px;">
-        <ion-icon name="ios-arrow-back" style="font-size: 35px"></ion-icon>
-    </ion-fab-button>
-   
+<ion-fab vertical="bottom" horizontal="start" (click)="comeback()">
+  <ion-fab-button style="width: 60px; height: 60px;">
+    <ion-icon name="ios-arrow-back" style="font-size: 35px"></ion-icon>
+  </ion-fab-button>
+
 </ion-fab>

@@ -26,27 +26,27 @@ export class DamagelistPage implements OnInit {
 
   constructor(public detailsService: DetailsService,
     private formBuilder: FormBuilder,
-    private navCtrl:NavController,
+    private navCtrl: NavController,
     private route: ActivatedRoute,
     private router: Router,
     private alertControler: AlertController) {
 
-    this.myForm = this.formBuilder.group({  });
+    this.myForm = this.formBuilder.group({});
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.incidence = this.router.getCurrentNavigation().extras.state.incidence;
       }
-      console.log('DAMAGE LIST INCIDENCIA',this.incidence);
+      console.log('DAMAGE LIST INCIDENCIA', this.incidence);
     });
-}
+  }
 
   ngOnInit() {
     /**Compruebo el booleano de damageServices ya que si esta a true significa que 
      * hemos accedido seleccionando el item del menu y si esta a false es que se ha accedido
      * desde la vista drawImage al darle a continuar.
      */
-      this.detailsService.getDetail(this.incidence.idInc).subscribe( (damSnapshot) => {
+    this.detailsService.getDetail(this.incidence.idInc).subscribe((damSnapshot) => {
       this.details.id = damSnapshot.payload.get('id');
       this.details.damages = damSnapshot.payload.get('damages');
       this.details.internDamages = damSnapshot.payload.get('internDamages');
@@ -64,13 +64,13 @@ export class DamagelistPage implements OnInit {
       this.forms.push({
         "form": '0' + (this.count)
       });
-      this.count ++;
+      this.count++;
     } else {
       this.myForm.addControl(String(this.details.internDamages.length), new FormControl('', Validators.required));
       this.forms.push({
         "form": this.count
       });
-      this.count ++;
+      this.count++;
     }
 
     console.log(this.details.internDamages);
@@ -80,7 +80,7 @@ export class DamagelistPage implements OnInit {
     this.myForm.removeControl(control.key);
 
     for (let i = 0; i < this.forms.length; i++) {
-      if(this.forms[i].form == control.key) {
+      if (this.forms[i].form == control.key) {
         this.details.internDamages.splice(i, 1);
         this.forms.splice(i, 1);
       }
@@ -104,7 +104,7 @@ export class DamagelistPage implements OnInit {
     return resp;
   }
 
-   goSummary(details: Details ) {
+  goSummary(details: Details) {
     if (this.checkListInternDamages(details)) {
       this.addInternalDamages();
       let navigationExtras: NavigationExtras = {
@@ -147,7 +147,7 @@ export class DamagelistPage implements OnInit {
       ]
     });
     await alert.present();
- }
+  }
 
   addInternalDamages() {
     this.detailsService.updateDetails(this.details);
@@ -155,7 +155,18 @@ export class DamagelistPage implements OnInit {
 
   comeback() {
     this.navCtrl.pop();
-   // this.router.navigate(['/menu']);
+    // this.router.navigate(['/menu']);
+  }
+
+  goDraw() {
+    this.addInternalDamages();
+    let navigationExtras: NavigationExtras = {
+      state: {
+        incidence: this.incidence
+      }
+    };
+    this.router.navigate(['/drawimage'], navigationExtras);
+
   }
 
 }

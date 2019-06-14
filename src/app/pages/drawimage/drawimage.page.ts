@@ -5,10 +5,10 @@ import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference 
 import { Observable } from 'rxjs';
 import { Incidence } from 'src/app/models/incidence';
 import { IncidenceService } from 'src/app/services/incidence.service';
-import { finalize} from 'rxjs/operators'
+import { finalize } from 'rxjs/operators'
 import { DetailsService } from '../../services/details.service';
 import { Details } from '../../models/details';
-import { NavController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-drawimage',
@@ -23,8 +23,7 @@ export class DrawimagePage implements OnInit {
   startY: any;
   isDown = false;
   ctx: any;
-  public myForm: FormGroup;
-  public averias = [];
+  //public myForm: FormGroup;
   public touches = [];
   downloadURL: Observable<any>;
   task: AngularFireUploadTask;
@@ -37,15 +36,12 @@ export class DrawimagePage implements OnInit {
   };
   goMenu: Boolean = false;
 
-
-  constructor(private formBuilder: FormBuilder,
-    public detailsService: DetailsService,
+  constructor(public detailsService: DetailsService,
     private storageAng: AngularFireStorage,
     private incidenceService: IncidenceService,
     private route: ActivatedRoute,
-    private router: Router) {
-
-    this.myForm = formBuilder.group({ });
+    private router: Router,
+    public toastCtrl: ToastController) {
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -53,8 +49,6 @@ export class DrawimagePage implements OnInit {
         console.log('INCIDENCIA ', this.incidence);
       }
     });
-
-    console.log(this.incidence);
   }
 
   ngOnInit(): void {
@@ -71,6 +65,29 @@ export class DrawimagePage implements OnInit {
     this.canvasElement.height = (document.body.clientHeight * 3) / 7;
     this.ctx = this.canvasElement.getContext('2d');
     this.setBackgroundImage(this.ctx);
+
+    try {
+      setTimeout(() => {
+        this.detailsService.getDetail(this.incidence.idInc).subscribe((damSnapshot) => {
+          if (damSnapshot.payload.get('id') == undefined) {
+            return;
+          }
+          this.details.id = damSnapshot.payload.get('id');
+          this.details.damages = damSnapshot.payload.get('damages');
+          this.details.internDamages = damSnapshot.payload.get('internDamages');
+          console.log(this.details);
+
+          this.touches = this.details.damages;
+          for (let i = 0; i < this.touches.length; i++) {
+            this.drawCircle(this.touches[i].x, this.touches[i].y, i + 1);
+          }
+        });
+      }, 350);
+    } catch (err) {
+
+    }
+
+    console.log(this.touches);
   }
 
   goDamageList() {
@@ -80,20 +97,22 @@ export class DrawimagePage implements OnInit {
       state: {
         incidence: this.incidence
       }
-      
+
     };
     this.router.navigate(['/damagelist'], navigationExtras);
   }
 
   insertDamagesDetails() {
     this.details.id = this.incidence.idInc;
-    this.details.damages = this.averias;
+    this.details.damages = this.touches;
     this.detailsService.createDetails(this.details);
   }
 
   returnMenu() {
     this.incidence.state = 'drawImage';
     this.incidenceService.updateIncidence(this.incidence);
+    this.insertDamagesDetails();
+
     this.router.navigate(['/menu']);
   }
 
@@ -104,9 +123,9 @@ export class DrawimagePage implements OnInit {
   async setBackgroundImage(context) {
     var background = new Image();
     background.src = "../../assets/img/coche-pro.jpg";
-      background.onload = await function () {
-        context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
-      }
+    background.onload = await function () {
+      context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
+    }
 
   }
 
@@ -123,26 +142,26 @@ export class DrawimagePage implements OnInit {
     this.task
       .snapshotChanges()
       .pipe(
-      finalize(() => {
-        this.ref.getDownloadURL().subscribe(data => {
-          url = data;
-          this.incidence.imageName = name;
-          this.incidence.imagePath = url;
-          this.incidence.imageB64 = dataURL;
-          if (this.goMenu) {
-            /**Si en la vista pulsas el boton volver te setea el estado de la incidencia a drawImage, si
-             * es el de continuar de continuar a damageList para que luego en el menu sepa hacia donde volver.
-             */
-            this.incidence.state = 'drawImage';
-          } else {
-            this.incidence.state = 'damageList';
-          }
+        finalize(() => {
+          this.ref.getDownloadURL().subscribe(data => {
+            url = data;
+            this.incidence.imageName = name;
+            this.incidence.imagePath = url;
+            this.incidence.imageB64 = dataURL;
+            if (this.goMenu) {
+              /**Si en la vista pulsas el boton volver te setea el estado de la incidencia a drawImage, si
+               * es el de continuar de continuar a damageList para que luego en el menu sepa hacia donde volver.
+               */
+              this.incidence.state = 'drawImage';
+            } else {
+              this.incidence.state = 'damageList';
+            }
 
-          console.log(this.incidence)
-          this.incidenceService.updateIncidence(this.incidence);
+            console.log(this.incidence)
+            this.incidenceService.updateIncidence(this.incidence);
 
-        });
-      })
+          });
+        })
       )
       .subscribe();
   }
@@ -151,9 +170,9 @@ export class DrawimagePage implements OnInit {
     // convert base64/URLEncoded data component to raw binary data held in a string
     var byteString;
     if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
+      byteString = atob(dataURI.split(',')[1]);
     else
-        byteString = unescape(dataURI.split(',')[1]);
+      byteString = unescape(dataURI.split(',')[1]);
 
     // separate out the mime component
     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
@@ -161,22 +180,35 @@ export class DrawimagePage implements OnInit {
     // write the bytes of the string to a typed array
     var ia = new Uint8Array(byteString.length);
     for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
+      ia[i] = byteString.charCodeAt(i);
     }
 
-    return new Blob([ia], {type:mimeString});
-}
+    return new Blob([ia], { type: mimeString });
+  }
 
-  handleStart(ev) {
+  async handleStart(ev) {
+    console.log(this.touches.length)
+    if (this.touches.length < 10) {
+      ev.preventDefault();
+      ev.stopPropagation();
 
-    ev.preventDefault();
-    ev.stopPropagation();
+      this.startX = ev.touches[0].clientX - this.canvasElement.offsetLeft;
+      this.startY = ev.touches[0].clientY - this.canvasElement.offsetTop;
 
-    this.startX = ev.touches[0].clientX - this.canvasElement.offsetLeft;
-    this.startY = ev.touches[0].clientY - this.canvasElement.offsetTop;
+      this.addControl();
+      this.drawCircle(this.startX, this.startY, this.touches.length);
+    } else {
+      const toast = await this.toastCtrl.create({
+        message: "Maximo 10 averias",
+        color: "light",
+        duration: 2000,
+        mode: "ios",
+        cssClass: "toastcss",
+      });
 
-    this.addControl();
-    this.drawCircle(this.startX, this.startY, this.touches.length);
+      toast.present();
+    }
+
   }
 
   drawCircle(x, y, id?) {
@@ -202,51 +234,24 @@ export class DrawimagePage implements OnInit {
 
   clearAll() {
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    this.myForm = this.formBuilder.group({});
-    this.averias = [];
     this.touches = [];
-
     this.setBackgroundImage(this.ctx);
   }
 
   addControl() {
 
-    if (this.touches.length == 0) {
-      this.myForm.addControl(String(0), new FormControl('', Validators.required));
-      this.touches.push({
-        "id": 0,
-        "x": this.startX,
-        "y": this.startY,
-        "form": 0
-      });
-    } else {
-      this.myForm.addControl(String(this.touches[this.touches.length - 1].form + 1), new FormControl('', Validators.required));
+    this.touches.push({
+      "x": this.startX,
+      "y": this.startY,
+      "info": ''
+    });
 
-      this.touches.push({
-        "id": this.touches[this.touches.length - 1].id + 1,
-        "x": this.startX,
-        "y": this.startY,
-        "form": this.touches[this.touches.length - 1].form + 1
-      });
-    }
-    console.log(this.myForm);
-    console.log(this.touches);
   }
 
-  removeControl(control) {
-    this.myForm.removeControl(control.key);
-
-    for (let i = 0; i < this.touches.length; i++) {
-
-      if (control.key == this.touches[i].form) {
-        this.touches.splice(i, 1);
-        this.averias.splice(i, 1);
-        this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-        i--;
-      } else {
-        this.touches[i].id = i;
-      }
-    }
+  removeControl(id) {
+    console.log(id)
+    this.touches.splice(id.key, 1);
+    this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 
     this.setBackgroundImage(this.ctx);
 

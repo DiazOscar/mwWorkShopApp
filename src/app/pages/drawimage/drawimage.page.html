@@ -20,13 +20,11 @@
                             </ion-col>
                         </ion-row>
                     </ion-toolbar>
-            <form [formGroup]="myForm">
-                <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index" color="light">
+                <ion-item *ngFor="let touch of touches | keyvalue; let i = index" color="light">
                     <ion-label> {{i + 1}} </ion-label>
-                    <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="averias[i]"></ion-input>
-                    <ion-icon size='large' (click)="removeControl(control)" name="close-circle"></ion-icon>
+                    <ion-input required type="text" placeHolder="AVERIA..." [(ngModel)]="touches[i].info"></ion-input>
+                    <ion-icon size='large' (click)="removeControl(touch)" name="close-circle"></ion-icon>
                 </ion-item>
-            </form>
         </ion-list>
 </ion-content>
 
