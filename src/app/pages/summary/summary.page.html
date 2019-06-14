@@ -1,57 +1,55 @@
 <ion-content padding color="medium" forceOverscroll="false" class="nomargin">
 
-    <ion-label color="dark">
-      <h1 text-center class="titulo">RESUMEN DE LA PERITACION</h1>
-    </ion-label>
+  <ion-label color="dark">
+    <h1 text-center class="titulo">RESUMEN DE LA PERITACION</h1>
+  </ion-label>
 
   <div class="backgroundwhite">
     <ion-card-header>
       <ion-card-title> AVERIA: {{this.incidence.idInc}} - {{this.incidence.idCar}}</ion-card-title>
       <ion-card-subtitle class="sub">{{this.customer.name}} / {{this.customer.nif}}</ion-card-subtitle>
     </ion-card-header>
-
-    <canvas #myCanvas id="myCanvas"></canvas>
+    <img [src]="this.incidence.imageB64" alt="" width="90%" height="75%">
   </div>
 
   <ion-row style="margin-top: 5%">
     <ion-col size="6">
-        <ion-list class="summary">
+      <ion-list class="summary">
         <ion-toolbar color="primary">
-            <h3 text-center>Carroceria</h3>
-          </ion-toolbar>
-          <ion-item *ngFor="let av of this.details.damages; let i = index;">
-            <ion-text>{{i + 1 }} - {{av.info}}</ion-text>
-          </ion-item>
-        </ion-list>
+          <h3 text-center>Carroceria</h3>
+        </ion-toolbar>
+        <ion-item *ngFor="let av of this.details.damages; let i = index;">
+          <ion-text>{{i + 1 }} - {{av.info}}</ion-text>
+        </ion-item>
+      </ion-list>
     </ion-col>
 
     <ion-col size="6">
-        <ion-list class="summary">
+      <ion-list class="summary">
         <ion-toolbar color="primary">
-            <h3 text-center>Internas</h3>
-          </ion-toolbar>
-          <ion-item *ngFor="let av of this.details.internDamages">
-            <ion-text>{{av}}</ion-text>
-          </ion-item>
-        </ion-list>
-      </ion-col>
+          <h3 text-center>Internas</h3>
+        </ion-toolbar>
+        <ion-item *ngFor="let av of this.details.internDamages">
+          <ion-text>{{av}}</ion-text>
+        </ion-item>
+      </ion-list>
+    </ion-col>
   </ion-row>
 </ion-content>
 
 <ion-footer no-border>
   <ion-toolbar color="medium">
 
-          <ion-button color="success" slot="start" (click)="okey()" expand="block" size="large" class="btns"> 
-            <ion-icon name="checkmark-circle-outline" style="font-size: 50px;"></ion-icon>
-          </ion-button>
+    <ion-button color="success" slot="start" (click)="okey()" expand="block" size="large" class="btns">
+      <ion-icon name="checkmark-circle-outline" style="font-size: 50px;"></ion-icon>
+    </ion-button>
 
-          <ion-button color="warning" (click)="cancelAndCome()" size="large" class="btns" slot="end" >
-            <ion-icon name="close-circle-outline" style="font-size: 50px;"></ion-icon>
-          </ion-button>
-    
-          <ion-button color="danger" (click)="deleteAndCome()" size="large" class="btns" slot="end">
-            <ion-icon name="trash" slot="icon-only" style="font-size: 50px;"></ion-icon>
-          </ion-button>
+    <ion-button color="warning" (click)="cancelAndCome()" size="large" class="btns" slot="end">
+      <ion-icon name="close-circle-outline" style="font-size: 50px;"></ion-icon>
+    </ion-button>
+
+    <ion-button color="danger" (click)="deleteAndCome()" size="large" class="btns" slot="end">
+      <ion-icon name="trash" slot="icon-only" style="font-size: 50px;"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-footer>
-

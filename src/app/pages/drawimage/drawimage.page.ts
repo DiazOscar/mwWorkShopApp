@@ -130,60 +130,22 @@ export class DrawimagePage implements OnInit {
   }
 
   async saveCanvasImage() {
-    let url = '';
-    let name = this.incidence.idInc + '.png';
 
     let dataURL = this.canvasElement.toDataURL('image/png', 0.5);
-    let blob = this.dataURItoBlob(dataURL);
+    this.incidence.imageB64 = dataURL;
 
-    this.ref = this.storageAng.ref(name);
-    this.task = this.storageAng.ref(name).put(blob);
-
-    this.task
-      .snapshotChanges()
-      .pipe(
-        finalize(() => {
-          this.ref.getDownloadURL().subscribe(data => {
-            url = data;
-            this.incidence.imageName = name;
-            this.incidence.imagePath = url;
-            this.incidence.imageB64 = dataURL;
-            if (this.goMenu) {
-              /**Si en la vista pulsas el boton volver te setea el estado de la incidencia a drawImage, si
-               * es el de continuar de continuar a damageList para que luego en el menu sepa hacia donde volver.
-               */
-              this.incidence.state = 'drawImage';
-            } else {
-              this.incidence.state = 'damageList';
-            }
-
-            console.log(this.incidence)
-            this.incidenceService.updateIncidence(this.incidence);
-
-          });
-        })
-      )
-      .subscribe();
-  }
-
-  dataURItoBlob(dataURI) {
-    // convert base64/URLEncoded data component to raw binary data held in a string
-    var byteString;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0)
-      byteString = atob(dataURI.split(',')[1]);
-    else
-      byteString = unescape(dataURI.split(',')[1]);
-
-    // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // write the bytes of the string to a typed array
-    var ia = new Uint8Array(byteString.length);
-    for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+    if (this.goMenu) {
+      /**Si en la vista pulsas el boton volver te setea el estado de la incidencia a drawImage, si
+       * es el de continuar de continuar a damageList para que luego en el menu sepa hacia donde volver.
+       */
+      this.incidence.state = 'drawImage';
+    } else {
+      this.incidence.state = 'damageList';
     }
 
-    return new Blob([ia], { type: mimeString });
+    console.log(this.incidence)
+    this.incidenceService.updateIncidence(this.incidence);
+
   }
 
   async handleStart(ev) {
@@ -250,7 +212,7 @@ export class DrawimagePage implements OnInit {
 
   removeControl(id) {
     console.log(id)
-    this.touches.splice(id.key, 1);
+    this.touches.splice(id, 1);
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 
     this.setBackgroundImage(this.ctx);

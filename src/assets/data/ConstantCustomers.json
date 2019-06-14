@@ -7,23 +7,27 @@
     {
       "type": "text",
       "name": "name",
-      "title": "Nombre"
+      "title": "Nombre",
+      "length": "30"
     },
     {
       "type": "text",
       "name": "phone",
-      "title": "Telefono"
+      "title": "Telefono",
+      "length": "9"
 
     },
     {
       "type": "text",
       "name": "address",
-      "title": "Calle"
+      "title": "Calle",
+      "length": "50"
 
     },
     {
       "type": "text",
       "name": "email",
-      "title": "Email"
+      "title": "Email",
+      "length": "40"
     }
   ]

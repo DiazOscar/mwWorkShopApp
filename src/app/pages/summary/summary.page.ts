@@ -58,12 +58,6 @@ export class SummaryPage implements OnInit {
       this.details.internDamages = damSnapshot.payload.get('internDamages');
     });
 
-    this.canvasElement = this.canvas.nativeElement;
-    this.setBackgroundImage();
-    this.canvasElement.width = document.body.clientWidth*4/ 5;
-    this.canvasElement.height = (document.body.clientHeight*3)/12;
-    this.ctx = this.canvasElement.getContext('2d');
-
 
     this.vehicleService.getVehicle(this.incidence.idCar).subscribe((veh) =>{
        this.x = veh.payload.data()
@@ -81,17 +75,6 @@ export class SummaryPage implements OnInit {
     console.log('CUSTOMER',this.customer);
   }
 
-  setBackgroundImage(){
-    let context = this.canvasElement.getContext("2d");
-
-    var background = new Image();
-    background.src = this.incidence.imagePath;
-
-    background.onload = function(){
-      context.drawImage(background,0,0, document.body.clientWidth*4/5, (document.body.clientHeight*3)/12);   
-    }
-  }
-
   async deleteAndCome(){
     const alert = await this.alertCtrl.create({
       header: 'Desea eliminar la incidencia?',
@@ -99,10 +82,7 @@ export class SummaryPage implements OnInit {
         {
           text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
+          cssClass: 'secondary'
         }, {
           text: 'Eliminar',
           handler: () => {
@@ -126,8 +106,6 @@ export class SummaryPage implements OnInit {
       'id': this.incidence.idInc,
       'car': this.incidence.idCar,
       'date': this.incidence.date,
-      'image': this.incidence.imageName,
-      'imagePath': this.incidence.imagePath,
       'imageB64': this.incidence.imageB64
     };
 

@@ -126,14 +126,14 @@ export class FormularioPage implements OnInit {
 
   /*Dentro del constructor inicializo mi FormGroup(es un conjunto de form Control) y le aplico ciertos
   parametros para validar*/
-  constructor(private route: ActivatedRoute,
-    private customerService: CustomerService,
+  constructor(private customerService: CustomerService,
     private formBuilder: FormBuilder,
     private vehicleService: VehicleService,
     private dataService: DataService,
-    public alertController: AlertController,
-    public incidenceService: IncidenceService,
-    private router: Router,public toastCtrl: ToastController) {
+    private alertController: AlertController,
+    private incidenceService: IncidenceService,
+    private router: Router,
+    private toastCtrl: ToastController) {
       this.buildFormGroupCustomers();
       this.buildFormGroupVehicles();
   }
@@ -160,17 +160,8 @@ export class FormularioPage implements OnInit {
         });
       });
     });
-
-    this.incidenceService.getAllIncidence().subscribe((incSnapshot) => {
-      this.incidenceArray = [];
-      incSnapshot.forEach((incData: any) => {
-        this.incidenceArray.push({
-          id: incData.payload.doc.id,
-          data : incData.payload.doc.data()
-        });
-      });
-    });
-    /*Recojo los datos del json y los guardo en estas variables*/
+    
+    /*get json data*/
     this.constantVehicles = this.dataService.getConstantVehicles();
     this.constantCustomers = this.dataService.getConstantCustomers();
   }

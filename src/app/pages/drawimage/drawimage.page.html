@@ -1,45 +1,42 @@
 <ion-content color="medium" forceOverscroll="false">
 
-  <canvas #myCanvas id="myCanvas"
-  (touchstart)="handleStart($event)"
-  style="border:3px solid #000000;">
-  </canvas>
+    <canvas #myCanvas id="myCanvas" (touchstart)="handleStart($event)" style="border:3px solid #000000;">
+    </canvas>
 
-
-      
-        <ion-list class="list">
-                <ion-toolbar color="primary">
-                        <ion-row>
-                            <ion-col size="10">
-                                <ion-card-title color="primary">
-                                    <h1 style="color: white">AVERIAS: {{this.incidence.idInc}}</h1>            
-                                </ion-card-title>
-                            </ion-col>
-                            <ion-col size="2">
-                                <ion-button color="light" (click)="clearAll()">Limpiar</ion-button>
-                            </ion-col>
-                        </ion-row>
-                    </ion-toolbar>
-                <ion-item *ngFor="let touch of touches | keyvalue; let i = index" color="light">
-                    <ion-label> {{i + 1}} </ion-label>
-                    <ion-input required type="text" placeHolder="AVERIA..." [(ngModel)]="touches[i].info"></ion-input>
-                    <ion-icon size='large' (click)="removeControl(touch)" name="close-circle"></ion-icon>
-                </ion-item>
-        </ion-list>
+    <ion-list class="list">
+        <ion-toolbar color="primary">
+            <ion-row>
+                <ion-col size="10">
+                    <ion-card-title color="primary">
+                        <h1 style="color: white">AVERIAS: {{this.incidence.idInc}}</h1>
+                    </ion-card-title>
+                </ion-col>
+                <ion-col size="2">
+                    <ion-button color="light" (click)="clearAll()">Limpiar</ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-toolbar>
+        <ion-item *ngFor="let touch of touches | keyvalue; let i = index" color="light">
+            <ion-label> {{i + 1}} </ion-label>
+            <ion-input required type="text" placeHolder="AVERIA..." [(ngModel)]="touches[i].info" maxLength="60">
+            </ion-input>
+            <ion-icon size='large' (click)="removeControl(touch)" name="close-circle"></ion-icon>
+        </ion-item>
+    </ion-list>
 </ion-content>
 
 
-    <ion-fab vertical="bottom" horizontal="end" (click)="goDamageList()" >
-        <ion-fab-button style="width: 60px; height: 60px;margin-top: 10%;" >
-            <ion-icon name="ios-arrow-forward" style="font-size: 35px"></ion-icon>
-            </ion-fab-button>
-        </ion-fab>
-                  
-        <ion-fab vertical="bottom" horizontal="start"  (click)="returnMenu()">
-            <ion-fab-button style="width: 60px; height: 60px;">
-                <ion-icon name="ios-arrow-back" style="font-size: 35px"></ion-icon>
-            </ion-fab-button>
-    </ion-fab>
+<ion-fab vertical="bottom" horizontal="end" (click)="goDamageList()">
+    <ion-fab-button style="width: 60px; height: 60px; margin-top: 10%;">
+        <ion-icon name="ios-arrow-forward" style="font-size: 35px"></ion-icon>
+    </ion-fab-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="start" (click)="returnMenu()">
+    <ion-fab-button style="width: 60px; height: 60px;">
+        <ion-icon name="ios-arrow-back" style="font-size: 35px"></ion-icon>
+    </ion-fab-button>
+</ion-fab>
 
 
 <!--

@@ -12,6 +12,7 @@
               <div *ngSwitchCase="'nif'">
                   <ion-label position="floating">{{ c.title }}</ion-label>
                   <ion-input
+                    maxLength= "9"
                     [type]="c.type"
                     [name]="c.name" 
                     [(ngModel)]="customer[c.name]"
@@ -30,6 +31,7 @@
                 <ion-input 
                   [type]="c.type"
                   [name]="c.name" 
+                  maxLength = "c.length"
                   [(ngModel)]="customer[c.name]"
                   [formControlName]="c.name">
                 </ion-input>
