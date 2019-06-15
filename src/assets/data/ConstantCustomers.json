@@ -2,7 +2,8 @@
     {
       "type": "text",
       "name": "nif",
-      "title": "Nif"
+      "title": "Nif",
+      "length": "9"
     },
     {
       "type": "text",

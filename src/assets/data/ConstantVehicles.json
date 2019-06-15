@@ -7,29 +7,34 @@
     {
       "type": "text",
       "name": "brand",
-      "title": "Marca"
+      "title": "Marca",
+      "length": "20"
 
     },
     {
       "type": "text",
       "name": "model",
-      "title": "Modelo"
+      "title": "Modelo",
+      "length": "20"
 
     },
     {
-      "type": "Number",
+      "type": "text",
       "name": "kilometers",
-      "title": "Kilometros"
+      "title": "Kilometros",
+      "length": "7"
 
     },
     {
       "type": "text",
       "name": "color",
-      "title": "Color"
+      "title": "Color",
+      "length": "12"
     },
     {
       "type": "text",
       "name": "year",
-      "title": "Año"
+      "title": "Año",
+      "length": "4"
     }
   ]

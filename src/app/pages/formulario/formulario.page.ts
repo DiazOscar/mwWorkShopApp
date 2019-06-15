@@ -253,7 +253,7 @@ export class FormularioPage implements OnInit {
         break;
       }
       case 'color': {
-        this.validation_messages_vehicles.year.forEach( res => {
+        this.validation_messages_vehicles.color.forEach( res => {
           if (control.hasError(res.type)) {
               error = res.message;
           }
@@ -401,7 +401,7 @@ export class FormularioPage implements OnInit {
       ])),
       kilometers: new FormControl('', Validators.compose([
         Validators.required,
-        Validators.pattern('') // falta expresion regular
+        Validators.pattern('^[0-9]*$') // falta expresion regular
       ])),
       color: new FormControl('', Validators.compose([
         Validators.required
@@ -557,7 +557,7 @@ export class FormularioPage implements OnInit {
         }
       }
     }
-    
+
   }
 
 
@@ -573,6 +573,7 @@ export class FormularioPage implements OnInit {
   }
 
   checkNifCustomer() {
+
     this.auxVehicleArray = [];
     for (let cust of this.customerArray) {
       if (this.customer.nif == cust.data.nif) {
@@ -581,6 +582,7 @@ export class FormularioPage implements OnInit {
         this.customer.email = cust.data.email;
         this.customer.phone = cust.data.phone;
         this.customer.address = cust.data.address;
+
       }
     }
     //Si el usuario existe recorro la lista de vehiculos y guardo en un array Auxiliar los vehiculos que pertenezcan al cliente
@@ -597,18 +599,17 @@ export class FormularioPage implements OnInit {
 
   getVehicleCustomer(event) {
     console.log(event);
-     for (let auxV of this.auxVehicleArray) {
-       console.log(String(event.detail.value.length), auxV.data.enrollment.length);
-      if(event.detail.value == auxV.data.enrollment) {
-
-         this.vehicle.enrollment = auxV.data.enrollment;
-         this.vehicle.kilometers = auxV.data.kilometers;
-         this.vehicle.model = auxV.data.model;
-         this.vehicle.brand = auxV.data.brand;
-         this.vehicle.owner = auxV.data.owner;
-         this.vehicle.year = auxV.data.year;
-         this.vehicle.color = auxV.data.color;
-         this.vehicle.gas = auxV.data.gas;
+    for (let auxV of this.auxVehicleArray) {
+    console.log(String(event.detail.value.length), auxV.data.enrollment.length);
+    if (event.detail.value == auxV.data.enrollment) {
+        this.vehicle.enrollment = auxV.data.enrollment;
+        this.vehicle.kilometers = auxV.data.kilometers;
+        this.vehicle.model = auxV.data.model;
+        this.vehicle.brand = auxV.data.brand;
+        this.vehicle.owner = auxV.data.owner;
+        this.vehicle.year = auxV.data.year;
+        this.vehicle.color = auxV.data.color;
+        this.vehicle.gas = auxV.data.gas;
        }
     }
 

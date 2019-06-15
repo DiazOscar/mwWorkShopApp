@@ -11,11 +11,12 @@
   
               <div *ngSwitchCase="'nif'">
                   <ion-label position="floating">{{ c.title }}</ion-label>
+                 
                   <ion-input
-                    maxLength= "9"
                     [type]="c.type"
-                    [name]="c.name" 
+                    [name]="c.name"
                     [(ngModel)]="customer[c.name]"
+                    [maxlength] = "c.length"
                     [formControlName]="c.name"
                     (ionBlur)="checkNifCustomer()"
                     style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
@@ -23,6 +24,7 @@
                   <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
                     <span class="colorRojo">{{ getErrorCustomers(c.name)}}</span>
                   </div>
+                 
                   
                 </div>
                   
@@ -31,7 +33,7 @@
                 <ion-input 
                   [type]="c.type"
                   [name]="c.name" 
-                  maxLength = "c.length"
+                  [maxlength] = "c.length"
                   [(ngModel)]="customer[c.name]"
                   [formControlName]="c.name">
                 </ion-input>
@@ -68,7 +70,6 @@
             </div>
         </ion-col>
       </ion-row>
-      
 
       <form [formGroup]="formGroupVehicles">
 
@@ -85,10 +86,9 @@
                         (ionBlur)="checkEnrVehicle()"
                         style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                       </ion-input>
-
                       <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
-                      <span class="colorRojo">{{getErrorVehicles(cv.name)}}</span>
-                      </div>          
+                        <span class="colorRojo">{{getErrorVehicles(cv.name)}}</span>
+                        </div>  
                   </div>
 
                   <div *ngSwitchDefault>
@@ -98,6 +98,7 @@
                       <ion-input
                       [type]="cv.type"
                       [name]="cv.name"
+                      [maxlength] = "cv.length"
                       [formControlName]="cv.name"
                       [(ngModel)]="vehicle[cv.name]">
                     </ion-input>
