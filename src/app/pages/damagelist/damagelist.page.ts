@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DetailsService } from '../../services/details.service';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras, PRIMARY_OUTLET } from '@angular/router';
 import { Incidence } from 'src/app/models/incidence';
 import { Details } from 'src/app/models/details';
@@ -29,7 +29,8 @@ export class DamagelistPage implements OnInit {
     private navCtrl: NavController,
     private route: ActivatedRoute,
     private router: Router,
-    private alertControler: AlertController) {
+    private alertControler: AlertController,
+    private toastCtrl: ToastController) {
 
     this.myForm = this.formBuilder.group({});
 
@@ -105,14 +106,19 @@ export class DamagelistPage implements OnInit {
   }
 
   goSummary(details: Details) {
+
     if (this.checkListInternDamages(details)) {
-      this.addInternalDamages();
-      let navigationExtras: NavigationExtras = {
-        state: {
-          incidence: this.incidence
-        }
-      };
-      this.router.navigate(['/summary'], navigationExtras);
+      if (this.checkEmpty()) {
+        this.addInternalDamages();
+        let navigationExtras: NavigationExtras = {
+          state: {
+            incidence: this.incidence
+          }
+        };
+        this.router.navigate(['/summary'], navigationExtras);
+      } else {
+        this.alert("No campos vacios")
+      }
     } else {
       this.alertCheckDamages();
     }
@@ -154,19 +160,53 @@ export class DamagelistPage implements OnInit {
   }
 
   comeback() {
-    this.navCtrl.pop();
-    // this.router.navigate(['/menu']);
+    if (this.checkEmpty()) {
+      this.addInternalDamages();
+      this.router.navigate(['/menu']);
+    } else {
+      this.alert("No campos vacios")
+    }
+
   }
 
   goDraw() {
-    this.addInternalDamages();
-    let navigationExtras: NavigationExtras = {
-      state: {
-        incidence: this.incidence
-      }
-    };
-    this.router.navigate(['/drawimage'], navigationExtras);
+    if (this.checkEmpty()) {
+      this.addInternalDamages();
+      let navigationExtras: NavigationExtras = {
+        state: {
+          incidence: this.incidence
+        }
+      };
+      this.router.navigate(['/drawimage'], navigationExtras);
+    } else {
+      this.alert("No campos vacios")
+    }
 
+  }
+
+  checkEmpty(): boolean {
+    console.log(this.details.internDamages)
+    let check = true;
+    for (let damage of this.details.internDamages) {
+      if (damage == undefined || damage.length == 0) {
+        check = false;
+        return check;
+      }
+    }
+
+    return check;
+  }
+
+  async alert(message) {
+    const toast = await this.toastCtrl.create({
+      message: message,
+      color: "light",
+      duration: 2000,
+      mode: "ios",
+      cssClass: "toastcss",
+    });
+
+    toast.present();
   }
 
 }

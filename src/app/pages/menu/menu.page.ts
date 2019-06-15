@@ -78,4 +78,8 @@ export class MenuPage implements OnInit {
     this.detailsService.deleteDetails(inc.idInc);
   }
 
+  goAbout(){
+    this.router.navigate(["/about"])
+  }
+
 }

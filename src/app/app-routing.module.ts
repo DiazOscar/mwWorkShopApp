@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'drawimage', loadChildren: './pages/drawimage/drawimage.module#DrawimagePageModule' },
   { path: 'damagelist', loadChildren: './pages/damagelist/damagelist.module#DamagelistPageModule' },
   { path: 'summary', loadChildren: './pages/summary/summary.module#SummaryPageModule' },
+  { path: 'about', loadChildren: './pages/about/about.module#AboutPageModule' },
 ];
 
 @NgModule({

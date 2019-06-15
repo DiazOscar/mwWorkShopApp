@@ -41,7 +41,7 @@ export class DrawimagePage implements OnInit {
     private incidenceService: IncidenceService,
     private route: ActivatedRoute,
     private router: Router,
-    public toastCtrl: ToastController) {
+    private toastCtrl: ToastController) {
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -90,16 +90,22 @@ export class DrawimagePage implements OnInit {
     console.log(this.touches);
   }
 
-  goDamageList() {
-    this.insertDamagesDetails();
-    this.saveCanvasImage();
-    let navigationExtras: NavigationExtras = {
-      state: {
-        incidence: this.incidence
-      }
+  async goDamageList() {
+    console.log(this.checkEmpty())
+    if (this.checkEmpty()) {
+      this.insertDamagesDetails();
+      this.saveCanvasImage();
+      let navigationExtras: NavigationExtras = {
+        state: {
+          incidence: this.incidence
+        }
 
-    };
-    this.router.navigate(['/damagelist'], navigationExtras);
+      };
+      this.router.navigate(['/damagelist'], navigationExtras);
+    }else{
+      this.alert("No campos vacios")
+    }
+
   }
 
   insertDamagesDetails() {
@@ -109,11 +115,15 @@ export class DrawimagePage implements OnInit {
   }
 
   returnMenu() {
-    this.incidence.state = 'drawImage';
-    this.incidenceService.updateIncidence(this.incidence);
-    this.insertDamagesDetails();
-
-    this.router.navigate(['/menu']);
+    if(this.checkEmpty()){
+      this.incidence.state = 'drawImage';
+      this.incidenceService.updateIncidence(this.incidence);
+      this.insertDamagesDetails();
+  
+      this.router.navigate(['/menu']);      
+    }else{
+      this.alert("No campos vacios")
+    }
   }
 
   /**
@@ -160,15 +170,7 @@ export class DrawimagePage implements OnInit {
       this.addControl();
       this.drawCircle(this.startX, this.startY, this.touches.length);
     } else {
-      const toast = await this.toastCtrl.create({
-        message: "Maximo 10 averias",
-        color: "light",
-        duration: 2000,
-        mode: "ios",
-        cssClass: "toastcss",
-      });
-
-      toast.present();
+      this.alert("Maximo 10 averias")
     }
 
   }
@@ -212,7 +214,7 @@ export class DrawimagePage implements OnInit {
 
   removeControl(id) {
     console.log(id)
-    this.touches.splice(id, 1);
+    this.touches.splice(id.key, 1);
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 
     this.setBackgroundImage(this.ctx);
@@ -224,13 +226,29 @@ export class DrawimagePage implements OnInit {
     }, 350);
   }
 
-  checkValue(control: string): boolean {
-    let number: number = parseInt(control);
-    if (number >= (this.touches.length - 1)) {
-      return true;
-    } else {
-      return false;
+  checkEmpty(): boolean {
+    let check = true;
+    for (let damage of this.touches) {
+      console.log(damage.info.length)
+      if (damage.info.length == 0) {
+        check = false;
+        return check;
+      }
     }
+
+    return check;
+  }
+
+  async alert(message){
+    const toast = await this.toastCtrl.create({
+      message: message,
+      color: "light",
+      duration: 2000,
+      mode: "ios",
+      cssClass: "toastcss",
+    });
+
+    toast.present();
   }
 
 }

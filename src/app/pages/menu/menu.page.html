@@ -4,6 +4,9 @@
       <img src="../../../assets/icon/logo.png" alt="" width="15%" height="15%">
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button size="large" (click)="goAbout()"> 
+          <ion-icon name="information-circle-outline" style="font-size: 40px"></ion-icon>
+      </ion-button>
       <ion-button size="large" (click)="OnLogOut()">
         <ion-icon name="exit" style="font-size: 40px"></ion-icon>
       </ion-button>
@@ -20,7 +23,7 @@
       <div *ngSwitchCase="'damageList'">
 
         <ion-item (click)="goIncident(inc)" color="medium">
-          <ion-avatar >
+          <ion-avatar>
             <img src="assets/icon/notepad.png">
           </ion-avatar>
           <h2 style="margin-left: 5%;color: black">{{ inc.idInc }}</h2>
@@ -36,7 +39,7 @@
       </div>
       <div *ngSwitchDefault>
         <ion-item (click)="goIncident(inc)" color="medium">
-          <ion-avatar >
+          <ion-avatar>
             <img src="assets/icon/damage.png">
           </ion-avatar>
           <h2 style="margin-left: 5%;color: black">{{ inc.idInc }}</h2>
